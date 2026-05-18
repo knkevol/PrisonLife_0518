@@ -5,38 +5,77 @@ using UnityEngine;
 public class NewBehaviourScript : MonoBehaviour
 {
     [Header("스폰 설정")]
-    public GameObject stonePrefab;        // PrisonStone 프리팹 연결
-    public float stoneSpacing = 1.5f;     // 돌 간격
-    public float stoneYPosition = 0.5f;   // 돌 높이
+    public GameObject stonePrefab;
+    public float stoneSpacing = 10f;
+    public float stoneYPosition = 0.5f;
 
-    private BoxCollider zoneCollider;
+    private Vector3 spawnerCenter;
+    private Vector3 spawnerSize;
 
-    // Start is called before the first frame update
     void Start()
     {
-        zoneCollider = GetComponent<BoxCollider>();
+        CalculateBounds();
         SpawnStones();
+    }
+
+    void CalculateBounds()
+    {
+        Renderer[] renderers = GetComponentsInChildren<Renderer>();
+
+        if (renderers.Length == 0)
+        {
+            Debug.LogError("CalculateBounds()_StoneZone Renderer Error!");
+            return;
+        }
+
+        Bounds bounds = renderers[0].bounds;
+        foreach (Renderer r in renderers)
+        {
+            bounds.Encapsulate(r.bounds);
+        }
+
+        spawnerCenter = bounds.center;
+        spawnerSize = bounds.size;
+
+        Debug.Log($"StoneZone → Center: {spawnerCenter}, Size: {spawnerSize}");
     }
 
     void SpawnStones()
     {
-        // StoneZone의 크기와 위치 가져오기
-        Vector3 center = transform.position;
-        Vector3 size = zoneCollider.size;
+        float startX = spawnerCenter.x - spawnerSize.x / 2f + stoneSpacing / 2f;
+        float startZ = spawnerCenter.z - spawnerSize.z / 2f + stoneSpacing / 2f;
+        float endX = spawnerCenter.x + spawnerSize.x / 2f;
+        float endZ = spawnerCenter.z + spawnerSize.z / 2f;
 
-        float startX = center.x - size.x / 2f + stoneSpacing / 2f;
-        float startZ = center.z - size.z / 2f + stoneSpacing / 2f;
-
-        for (float x = startX; x < center.x + size.x / 2f; x += stoneSpacing)
+        for (float x = startX; x < endX; x += stoneSpacing)
         {
-            for (float z = startZ; z < center.z + size.z / 2f; z += stoneSpacing)
+            for (float z = startZ; z < endZ; z += stoneSpacing)
             {
-                Vector3 spawnPos = new Vector3(x, center.y + stoneYPosition, z);
+                Vector3 spawnPos = new Vector3(x, spawnerCenter.y + stoneYPosition, z);
                 GameObject stone = Instantiate(stonePrefab, spawnPos, Quaternion.identity);
-                stone.tag = "Stone"; // 태그 자동 설정
-                stone.transform.parent = transform; // StoneZone 자식으로
+                stone.tag = "Stone";
+                stone.transform.parent = transform;
             }
         }
+    }
+
+    private void OnDrawGizmos()
+    {
+        Renderer[] renderers = GetComponentsInChildren<Renderer>();
+        if (renderers.Length == 0)
+        {
+            Debug.LogError("OnDrawGizmos()_StoneZone Renderer Error!");
+            return;
+        }
+
+        Bounds bounds = renderers[0].bounds;
+        foreach (Renderer r in renderers)
+        {
+            bounds.Encapsulate(r.bounds);
+        }
+
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireCube(bounds.center, bounds.size);
     }
 
     // Update is called once per frame

@@ -10,8 +10,8 @@ public class PrisonCatController : MonoBehaviour
     public float speed = 20f;
 
     float gravity = -20f;
-    float yVelocity = 0f;
-    public Vector3 childScale = new Vector3(1.5f, 1.5f, 1.5f);
+    float yVelocity = 1f;
+    public Vector3 childScale = new Vector3(7f, 7f, 7f);
 
     // ─── 터치 관련 변수 추가 ───────────────────────
     private Vector2 touchStartPos;
