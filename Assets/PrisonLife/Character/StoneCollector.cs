@@ -8,9 +8,9 @@ public class StoneCollector : MonoBehaviour
     [Header("돌 설정")]
     public int maxStones = 20;
     private int currentStones = 0;
-    public Vector3 firstStoneOffset = new Vector3(0f, 0.5f, -0.8f);  // 첫 번째 돌 위치 (등 뒤)
-    public Vector3 stackOffset = new Vector3(0f, 0.4f, 0f);           // 돌 쌓이는 간격
-    public float stoneScale = 10f;                                    // 등에 붙는 돌 크기
+    public Vector3 firstStoneOffset = new Vector3(0f, 0.5f, -5f);
+    public Vector3 stackOffset = new Vector3(0f, 1f, 0f);
+    public float stoneScale = 13f; 
 
     [Header("MAX Text")]
     public TextMeshPro maxText; // 캐릭터에 띄울 MAX 텍스트
@@ -92,6 +92,12 @@ public class StoneCollector : MonoBehaviour
         maxText.gameObject.SetActive(true);
         yield return new WaitForSeconds(2f);
         maxText.gameObject.SetActive(false);
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, 1f);
     }
 
     public int GetStoneCount() => currentStones;

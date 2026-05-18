@@ -1258,8 +1258,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxStones: 20
-  firstStoneOffset: {x: 0, y: 0.5, z: -0.8}
-  stackOffset: {x: 0, y: 0.4, z: 0}
+  firstStoneOffset: {x: 0, y: 0.5, z: -2}
+  stackOffset: {x: 0, y: 0.6, z: 0}
   stoneScale: 10
   maxText: {fileID: 0}
 --- !u!1 &907198397

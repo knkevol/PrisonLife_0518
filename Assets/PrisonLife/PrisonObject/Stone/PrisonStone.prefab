@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 4475312737062885119}
   - component: {fileID: 1873346197536301621}
   - component: {fileID: 8864995046986176679}
+  - component: {fileID: -8827964217060302072}
   m_Layer: 0
   m_Name: PrisonStone
   m_TagString: Stone
@@ -96,3 +97,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 14839b1d09cfb8e428d028038d25eb61, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isCollected: 0
+--- !u!136 &-8827964217060302072
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 216043043027239904}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.09491518
+  m_Height: 0.22866231
+  m_Direction: 1
+  m_Center: {x: 0, y: 0.11453976, z: 0.0066275895}
