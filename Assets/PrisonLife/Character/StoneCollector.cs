@@ -82,8 +82,8 @@ public class StoneCollector : MonoBehaviour
         {
             return false; // 수정예정 :: 수집 but max 띄우기
         }
-            
 
+        MoneyManager.Instance.AddMoney(100);
         // 돌을 캐릭터 등 뒤로 이동
         stone.tag = "Untagged"; // 중복 수집 방지
         stone.transform.parent = transform; // 캐릭터 자식으로
