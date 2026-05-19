@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class NewBehaviourScript : MonoBehaviour
 {
-    [Header("스폰 설정")]
+    [Header("Stone 스폰 설정")]
     public GameObject stonePrefab;
-    public float stoneSpacing = 10f;
+    public float stoneSpacing = 7f;
     public float stoneYPosition = 0.5f;
 
     private Vector3 spawnerCenter;

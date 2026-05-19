@@ -6,6 +6,8 @@ TagManager:
   tags:
   - Stone
   - PrisonPlayer
+  - Handcuffs
+  - NPC
   layers:
   - Default
   - TransparentFX
