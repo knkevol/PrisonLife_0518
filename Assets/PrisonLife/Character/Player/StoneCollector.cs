@@ -6,12 +6,12 @@ using TMPro;
 public class StoneCollector : MonoBehaviour
 {
     [Header("돌 설정")]
-    public int maxStones = 20;
+    public int maxStones = 10;
     private int currentStones = 0;
 
     [Header("돌 쌓이는 위치")]
     public Vector3 firstStoneOffset = new Vector3(0f, 0.5f, -5f);
-    public Vector3 stackOffset = new Vector3(0f, 1f, 0f);
+    public Vector3 stackOffset = new Vector3(0f, 2f, 0f);
     public float stoneScale = 13f;
 
     [Header("MAX Text")]
@@ -19,9 +19,23 @@ public class StoneCollector : MonoBehaviour
     public TextMeshProUGUI maxText;
     public Vector3 maxTextOffset = new Vector3(0f, 2f, 0f);
 
+    [Header("BeforeItemZone")]
+    public Vector3 zoneStackOffset = new Vector3(0f, 2f, 0f);  // Zone내 돌 쌓기 간격
+    public float zoneStoneScale = 8f;
+
+    [Header("AfterItemZone")]
+    public AfterItemZone afterItemZone;
+
+    [Header("앞쪽 아이템 쌓기 설정")]
+    public Vector3 handcuffsOffset = new Vector3(2f, 1f, 5f);   // 첫번째 아이템 위치 (앞쪽)
+    public Vector3 handcuffsStackOffset = new Vector3(0f, 1.5f, 0f);    // 쌓기 간격
+    public float handcuffsScale = 3f;
+
     private Camera mainCamera;
     private bool isShowMax = false;
+    private bool isTransferring = false; // 중복 이전 방지
     private List<GameObject> collectedStones = new List<GameObject>();
+    private List<GameObject> handcuffs= new List<GameObject>();     // 앞쪽 아이템 리스트
 
     // Start is called before the first frame update
     void Start()
@@ -83,7 +97,7 @@ public class StoneCollector : MonoBehaviour
             return false; // 수정예정 :: 수집 but max 띄우기
         }
 
-        MoneyManager.Instance.AddMoney(100);
+        MoneyManager.Instance.AddMoney(100); // 판매로직 옮겨야됨 --------------------------
         // 돌을 캐릭터 등 뒤로 이동
         stone.tag = "Untagged"; // 중복 수집 방지
         stone.transform.parent = transform; // 캐릭터 자식으로
@@ -135,11 +149,169 @@ public class StoneCollector : MonoBehaviour
     }
 
     public int GetStoneCount() => currentStones;
+    public int GetFrontItemCount() => handcuffs.Count;
 
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, 1f);
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        Debug.Log($"보유한 돌 양: {collectedStones.Count}");
+        Debug.Log($"[트리거] 부딪힌 물체 이름: {other.gameObject.name} | 태그: {other.tag}");
+
+        Transform zoneTransform = GetZoneTransform(other.transform, "BeforeItemZone");
+
+        if (zoneTransform != null && !isTransferring)
+        {
+            if (collectedStones.Count == 0)
+            {
+                Debug.Log("collectedStones.Count == 0");
+                return;
+            }
+
+            StartCoroutine(TransferStonesToZone(zoneTransform));
+        }
+
+        Transform afterZone = GetZoneTransform(other.transform, "AfterItemZone");
+        if (afterZone != null && !isTransferring)
+        {
+            AfterItemZone zone = afterZone.GetComponent<AfterItemZone>();
+            if (zone != null && zone.GetItemCount() > 0)
+            {
+                StartCoroutine(TransferItemsToFront(zone));
+            }
+            return;
+        }
+    }
+
+    IEnumerator TransferItemsToFront(AfterItemZone zone)
+    {
+        isTransferring = true;
+
+        List<GameObject> items = new List<GameObject>(zone.GetItems());
+        Debug.Log($"이전할 아이템 수: {items.Count}");
+
+        for (int i = 0; i < items.Count; i++)
+        {
+            GameObject item = items[i];
+            if (item == null)
+            {
+                Debug.Log($"[{i}] item이 null");
+                continue;
+            }
+
+            Debug.Log($"[{i}] 이전 전 부모: {item.transform.parent?.name}");
+            item.transform.parent = transform; // 플레이어로 부모 변경
+            Debug.Log($"[{i}] 부모 변경 후: {item.transform.parent?.name}");
+
+            Vector3 localPos = handcuffsOffset + handcuffsStackOffset * (handcuffs.Count);
+            item.transform.localPosition = localPos;
+            item.transform.localRotation = Quaternion.identity;
+            item.transform.localScale = Vector3.one * handcuffsScale;
+
+            Debug.Log($"[{i}] localPosition: {item.transform.localPosition}");
+            Debug.Log($"[{i}] worldPosition: {item.transform.position}");
+            Debug.Log($"worldScale: {item.transform.lossyScale}");
+
+            Collider col = item.GetComponent<Collider>();
+            if (col != null)
+            {
+                col.enabled = false;
+            }
+
+            handcuffs.Add(item);
+
+            yield return new WaitForSeconds(0.05f);
+
+            if (item == null)
+                Debug.Log($"[{i}] yield 후 item 사라짐 → 외부에서 Destroy됨");
+            else
+                Debug.Log($"[{i}] yield 후 위치: {item.transform.position}");
+        }
+        
+        // AfterItemZone 비우기
+        zone.ClearAllItems();
+        isTransferring = false;
+    }
+
+    Transform GetZoneTransform(Transform target, string tag) //부모 탐색해서 원하는 태그 찾기
+    {
+        Transform current = target;
+
+        while (current != null)
+        {
+            //Debug.Log($"[태그 탐색] {current.name} | 태그: {current.tag}");
+
+            if (current.CompareTag(tag))
+                return current;
+
+            current = current.parent;
+        }
+
+        return null;
+    }
+
+    IEnumerator TransferStonesToZone(Transform zoneTransform)
+    {
+        isTransferring = true;
+
+        Debug.Log($"BeforeItemZone으로 돌 {collectedStones.Count}개 이전 시작");
+
+        int stoneCount = collectedStones.Count;
+
+        for (int i = 0; i < collectedStones.Count; i++)
+        {
+            GameObject stone = collectedStones[i];
+
+            if (stone == null) 
+                continue;
+
+            // BeforeItemZone을 부모로 설정
+            stone.transform.parent = zoneTransform;
+
+            // Zone 중심 기준으로 쌓기
+            Vector3 localPos = zoneStackOffset * i;
+            stone.transform.localPosition = localPos;
+            stone.transform.localRotation = Quaternion.identity;
+            stone.transform.localScale = Vector3.one * zoneStoneScale;
+
+            // Collider 다시 비활성화 유지
+            Collider col = stone.GetComponent<Collider>();
+            if (col != null)
+            {
+                col.enabled = false;
+            }
+
+            yield return new WaitForSeconds(0.05f); // 살짝 딜레이로 자연스럽게
+        }
+
+        // MAX UI 숨기기
+        if (maxCanvas != null)
+            maxCanvas.SetActive(false);
+
+        isTransferring = false;
+
+        if (afterItemZone != null)
+        {
+            afterItemZone.SpawnItems(stoneCount);
+            Debug.Log($"AfterItemZone 스폰 요청: {stoneCount}개");
+        }
+
+        // 리스트 초기화
+        ClearStones();
+        collectedStones.Clear();
+        currentStones = 0;
+    }
+
+    void ClearStones()
+    {
+        foreach (var item in collectedStones)
+            if (item != null) Destroy(item);
+
+        collectedStones.Clear();
     }
 
     public void ConsumeAllStones()

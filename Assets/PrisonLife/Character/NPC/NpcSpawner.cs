@@ -95,24 +95,6 @@ public class NPCSpawner : MonoBehaviour
     {
         int index = activeNPCs.Count;
 
-        //Vector3 spawnPos;
-        //if (spawnAxis == SpawnAxis.X)
-        //{
-        //    spawnPos = new Vector3(
-        //        spawnStartPos.x + index * spawnSpacing,
-        //        spawnY,
-        //        spawnStartPos.z
-        //    );
-        //}
-        //else
-        //{
-        //    spawnPos = new Vector3(
-        //        spawnStartPos.x,
-        //        spawnY,
-        //        spawnStartPos.z + index * spawnSpacing
-        //    );
-        //}
-
         float startX = npcSpawnerCenter.x - npcSpawnerSize.x / 2f + npcSpacing / 2f;
         float endX = npcSpawnerCenter.x + npcSpawnerSize.x / 2f;
 
@@ -132,7 +114,6 @@ public class NPCSpawner : MonoBehaviour
         npc.transform.parent = transform;
         npc.transform.position = spawnPos;
         npc.transform.localScale = Vector3.one * npcScale;
-        Debug.Log($"NPC 스케일 : {npc.transform.localScale}");
 
         // NPCController 컴포넌트 초기화
         NPCController controller = npc.GetComponent<NPCController>();
@@ -142,7 +123,7 @@ public class NPCSpawner : MonoBehaviour
         }
 
         activeNPCs.Add(npc);
-        Debug.Log($"함수 끝 직전 실좌표: {npc.transform.position}, 실스케일: {npc.transform.localScale}");
+        //Debug.Log($"함수 끝 직전 실좌표: {npc.transform.position}, 실스케일: {npc.transform.localScale}");
     }
 
     // NPCController에서 PrisonZone 이동 시 호출
