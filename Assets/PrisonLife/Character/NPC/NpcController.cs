@@ -76,6 +76,18 @@ public class NPCController : MonoBehaviour
         Debug.Log("NPC PrisonZone 도착");
         currentState = NPCState.Waiting;
 
+        if (PrisonZone.Instance != null)
+        {
+            bool entered = PrisonZone.Instance.TryEnterPrison(gameObject);
+
+            if (!entered)
+            {
+                // 입장 실패 → No Cell 표시
+                ShowNoCell();
+                return;
+            }
+        }
+
         // Spawner에 이탈 알림 → 새 NPC 스폰 트리거
         if (spawner != null)
             spawner.OnNPCLeave(gameObject);
@@ -107,6 +119,9 @@ public class NPCController : MonoBehaviour
     public void UpdateBubbleText(string text)
     {
         if (bubbleText != null)
+        {
             bubbleText.text = text;
+            bubbleText.fontSize = 0.8f;
+        }
     }
 }

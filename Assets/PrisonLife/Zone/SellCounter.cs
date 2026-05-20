@@ -74,16 +74,9 @@ public class SellCounter : MonoBehaviour
 
     public void TryBuy()
     {
-        Debug.Log("SellConter ___________ TryBuy");
-        if (npcSpawner == null)
+        if (npcSpawner == null || handcuffsList.Count == 0)
         {
-            Debug.Log("NPCSpawner 없음");
-            return;
-        }
-
-        if (handcuffsList.Count == 0)
-        {
-            Debug.Log("수갑 없음 → 구매 불가");
+            Debug.Log("NPCSpawner X or Handcuffs X");
             return;
         }
 
@@ -95,6 +88,7 @@ public class SellCounter : MonoBehaviour
             Debug.Log("NPC 없음");
             return;
         }
+
         if (rightNPC.currentState != NPCController.NPCState.Waiting) return;
 
         int desired = rightNPC.desiredAmount;

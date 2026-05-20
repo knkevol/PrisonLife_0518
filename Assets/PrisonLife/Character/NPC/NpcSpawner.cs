@@ -47,8 +47,6 @@ public class NPCSpawner : MonoBehaviour
 
         npcSpawnerCenter = bounds.center;
         npcSpawnerSize = bounds.size;
-
-        
     }
 
     private void OnDrawGizmos()
@@ -153,5 +151,19 @@ public class NPCSpawner : MonoBehaviour
         }
 
         FillNPC();
+    }
+    public void ShowNoCellToAll()
+    {
+        activeNPCs.RemoveAll(npc => npc == null);
+
+        foreach (GameObject npc in activeNPCs)
+        {
+            NPCController controller = npc.GetComponent<NPCController>();
+            
+            if (controller != null && controller.currentState == NPCController.NPCState.Waiting)
+            {
+                controller.ShowNoCell();
+            }
+        }
     }
 }
