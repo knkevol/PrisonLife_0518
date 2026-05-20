@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,11 +8,13 @@ public class NPCSpawner : MonoBehaviour
     [Header("스폰 설정")]
     public GameObject npcPrefab;
     public int maxNPCCount = 5;
-    public float npcSpacing = 20f;
+    public float npcSpacing = 10f;
     public float npcYPosition = 1f;
     public float npcScale = 2f;
     public Vector3 spawnStartPos;
 
+    [Header("PrisonZone 정보")]
+    public Transform prisonTarget;
     public enum SpawnAxis { X, Z }
     public SpawnAxis spawnAxis = SpawnAxis.X;
 
@@ -66,8 +69,7 @@ public class NPCSpawner : MonoBehaviour
         Gizmos.DrawWireCube(bounds.center, bounds.size);
     }
 
-    // NPC가 5명이 될때까지 채우는 함수
-    // 구매완료 트리거에서 이 함수 호출
+    // NPC 5명 채우기
     public void FillNPC()
     {
         int currentCount = GetActiveNPCCount();
@@ -84,9 +86,6 @@ public class NPCSpawner : MonoBehaviour
     // 실제 활성화된 NPC 수 체크 (null 제거 포함)
     int GetActiveNPCCount()
     {
-        // PrisonZone으로 이동한 NPC는 null이 아니라
-        // activeNPCs에서 제거되어야 하므로
-        // NPCController에서 OnNPCLeave 호출 필요
         activeNPCs.RemoveAll(npc => npc == null);
         return activeNPCs.Count;
     }
@@ -126,18 +125,33 @@ public class NPCSpawner : MonoBehaviour
         //Debug.Log($"함수 끝 직전 실좌표: {npc.transform.position}, 실스케일: {npc.transform.localScale}");
     }
 
-    // NPCController에서 PrisonZone 이동 시 호출
+    // 우측 NPC 반환
+    public NPCController GetRightmostNPC()
+    {
+        activeNPCs.RemoveAll(npc => npc == null);
+
+        if (activeNPCs.Count == 0) return null;
+
+        // 마지막으로 스폰된 NPC = 가장 우측
+        GameObject rightNPC = activeNPCs[activeNPCs.Count - 1];
+        return rightNPC.GetComponent<NPCController>();
+    }
+
+    // PrisonZone 정보 반환
+    public Transform GetPrisonTarget()
+    {
+        return prisonTarget;
+    }
+
+    // 구매완료 한 NPC 이동
     public void OnNPCLeave(GameObject npc)
     {
         if (activeNPCs.Contains(npc))
         {
             activeNPCs.Remove(npc);
-            Debug.Log($"NPC SellZone 이탈 → 현재 NPC 수: {activeNPCs.Count}");
+            Debug.Log($"NPC PrisonZone 이동 → 현재 NPC 수: {activeNPCs.Count}");
         }
 
-        // NPC 떠난 후 자리 채우기
         FillNPC();
     }
-
-    
 }

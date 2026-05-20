@@ -92,7 +92,7 @@ public class StoneCollector : MonoBehaviour
 
     public bool TryCollectStone(GameObject stone)
     {
-        Debug.Log($"TryCollectStone()");
+        //Debug.Log($"TryCollectStone()");
         if (currentStones >= maxStones)
         {
             return false; // 수정예정 :: 수집 but max 띄우기
@@ -160,8 +160,8 @@ public class StoneCollector : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log($"보유한 돌 양: {collectedStones.Count}");
-        Debug.Log($"[트리거] 부딪힌 물체 이름: {other.gameObject.name} | 태그: {other.tag}");
+        //Debug.Log($"보유한 돌 양: {collectedStones.Count}");
+        //Debug.Log($"[트리거] 부딪힌 물체 이름: {other.gameObject.name} | 태그: {other.tag}");
 
         Transform beforeZone = GetZoneTransform(other.transform, "BeforeItemZone");
         if (beforeZone != null && !isTransferring)
@@ -203,7 +203,7 @@ public class StoneCollector : MonoBehaviour
     {
         isTransferring = true;
 
-        Debug.Log($"수갑 {collectedHandcuffs.Count}개 이전 시작");
+        SellCounter counter = zoneTransform.GetComponent<SellCounter>();
 
         for (int i = 0; i < collectedHandcuffs.Count; i++)
         {
@@ -212,20 +212,13 @@ public class StoneCollector : MonoBehaviour
             if (handcuffs == null)
                 continue;
 
-            Debug.Log($"[{i}] 이전 전 부모: {handcuffs.transform.parent?.name}");
-            handcuffs.transform.parent = zoneTransform; // SellCounter를 부모로
-            Debug.Log($"[{i}] 부모 변경 후: {handcuffs.transform.parent?.name}");
+            handcuffs.transform.parent = zoneTransform; // SellCounter를 부모로 지정
 
             Vector3 localPos = handcuffsStackOffset + (handcuffsStackOffset * i);
             handcuffs.transform.localPosition = localPos;
             handcuffs.transform.localRotation = Quaternion.identity;
             handcuffs.transform.localScale = Vector3.one * handcuffsScale;
-
-            Debug.Log($"[{i}] localPosition: {handcuffs.transform.localPosition}");
-            Debug.Log($"[{i}] worldPosition: {handcuffs.transform.position}");
-            Debug.Log($"worldScale: {handcuffs.transform.lossyScale}");
-
-            // Collider 다시 비활성화 유지
+            
             Collider col = handcuffs.GetComponent<Collider>();
             if (col != null)
             {
@@ -236,9 +229,9 @@ public class StoneCollector : MonoBehaviour
         }
 
         isTransferring = false;
-
-        // 리스트 초기화
+        counter.AddHandcuffs(collectedHandcuffs);
         ClearHandcuffs();
+        counter.TryBuy();
     }
 
     IEnumerator TransferItemsToFront(AfterItemZone zone)
@@ -253,7 +246,6 @@ public class StoneCollector : MonoBehaviour
             GameObject item = items[i];
             if (item == null)
             {
-                Debug.Log($"[{i}] item이 null");
                 continue;
             }
 
@@ -307,7 +299,7 @@ public class StoneCollector : MonoBehaviour
     {
         isTransferring = true;
 
-        Debug.Log($"돌 {collectedStones.Count}개 이전 시작");
+        //Debug.Log($"돌 {collectedStones.Count}개 이전 시작");
 
         int stoneCount = collectedStones.Count;
 
@@ -321,7 +313,6 @@ public class StoneCollector : MonoBehaviour
             // BeforeItemZone을 부모로 설정
             stone.transform.parent = zoneTransform;
 
-            // Zone 중심 기준으로 쌓기
             Vector3 localPos = zoneStackOffset * i;
             stone.transform.localPosition = localPos;
             stone.transform.localRotation = Quaternion.identity;
@@ -334,7 +325,7 @@ public class StoneCollector : MonoBehaviour
                 col.enabled = false;
             }
 
-            yield return new WaitForSeconds(0.05f); // 살짝 딜레이로 자연스럽게
+            yield return new WaitForSeconds(0.05f);
         }
 
         // MAX UI 숨기기
@@ -346,7 +337,7 @@ public class StoneCollector : MonoBehaviour
         if (afterItemZone != null)
         {
             afterItemZone.SpawnItems(stoneCount);
-            Debug.Log($"AfterItemZone 스폰 요청: {stoneCount}개");
+            //Debug.Log($"AfterItemZone 스폰 요청: {stoneCount}개");
         }
 
         // 리스트 초기화
@@ -368,20 +359,6 @@ public class StoneCollector : MonoBehaviour
         //    if (item != null) Destroy(item);
 
         collectedHandcuffs.Clear();
-    }
-
-    public void ConsumeAllStones()
-    {
-        foreach (var stone in collectedStones)
-        {
-            if (stone != null)
-                Destroy(stone);
-        }
-        collectedStones.Clear();
-        currentStones = 0;
-
-        if (maxText != null)
-            maxText.gameObject.SetActive(false);
     }
 
 }

@@ -13,8 +13,8 @@ public class NPCController : MonoBehaviour
     public GameObject bubble;
     public TextMeshProUGUI bubbleText;
 
-    [Header("이동 설정")]
-    public float moveSpeed = 3f;
+    [Header("PrisonZone 이동")]
+    public float moveSpeed = 10f;
     public Transform prisonZoneTarget; // PrisonZone 입장 위치
 
     private Camera mainCamera;
@@ -50,11 +50,11 @@ public class NPCController : MonoBehaviour
         // PrisonZone으로 이동 중일 때
         if (currentState == NPCState.Moving && prisonZoneTarget != null)
         {
-            MoveTowardsPrison();
+            MovePrisonZone();
         }
     }
 
-    void MoveTowardsPrison()
+    void MovePrisonZone()
     {
         Vector3 targetPos = prisonZoneTarget.position;
         transform.position = Vector3.MoveTowards(
@@ -66,13 +66,15 @@ public class NPCController : MonoBehaviour
         // 목적지 도착 확인
         if (Vector3.Distance(transform.position, targetPos) < 0.1f)
         {
-            OnArrivedAtPrison();
+            OnArrivedAtPrisonZone();
+            return;
         }
     }
 
-    void OnArrivedAtPrison()
+    void OnArrivedAtPrisonZone()
     {
         Debug.Log("NPC PrisonZone 도착");
+        currentState = NPCState.Waiting;
 
         // Spawner에 이탈 알림 → 새 NPC 스폰 트리거
         if (spawner != null)
@@ -87,12 +89,13 @@ public class NPCController : MonoBehaviour
             bubbleCanvas.gameObject.SetActive(false);
     }
 
-    // 구매 완료 시 외부에서 호출
+    //NPC 상태변경
     public void StartMoveToPrison(Transform target)
     {
         prisonZoneTarget = target;
         currentState = NPCState.Moving;
-        UpdateBubbleText(""); // 말풍선 비우기
+        bubbleCanvas.gameObject.SetActive(false);
+        //UpdateBubbleText(""); // 말풍선 비우기
     }
 
     public void ShowNoCell()

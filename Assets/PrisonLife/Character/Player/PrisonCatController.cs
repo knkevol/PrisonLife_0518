@@ -17,7 +17,7 @@ public class PrisonCatController : MonoBehaviour
     private Vector2 touchStartPos;
     private Vector2 moveDirection;
     private bool isTouching = false;
-    public float deadZone = 15f; // 이 픽셀 이상 드래그해야 이동
+    public float deadZone = 10f; // 이 픽셀 이상 드래그해야 이동
     // ────────────────────────────────────────────────
     void Start()
     {

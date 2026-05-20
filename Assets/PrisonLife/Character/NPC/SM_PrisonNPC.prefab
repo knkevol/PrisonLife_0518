@@ -1071,7 +1071,7 @@ MonoBehaviour:
   bubbleCanvas: {fileID: 173321511075473626}
   bubble: {fileID: 1023058778416769504}
   bubbleText: {fileID: 2676284894796268936}
-  moveSpeed: 3
+  moveSpeed: 10
   prisonZoneTarget: {fileID: 0}
   currentState: 0
 --- !u!1 &6932442663309234596

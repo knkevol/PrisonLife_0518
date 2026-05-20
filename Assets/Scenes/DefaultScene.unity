@@ -685,6 +685,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 354549474}
+  - component: {fileID: 354549475}
+  - component: {fileID: 354549476}
   m_Layer: 0
   m_Name: MoneyZone
   m_TagString: Untagged
@@ -701,8 +703,8 @@ Transform:
   m_GameObject: {fileID: 354549473}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 32, y: 1, z: -58.5}
-  m_LocalScale: {x: 2, y: 1, z: 2}
+  m_LocalPosition: {x: 32, y: 1, z: -32.99}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1470118238}
@@ -711,6 +713,42 @@ Transform:
   - {fileID: 1853988387}
   m_Father: {fileID: 1084575247}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &354549475
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 354549473}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: afef446a926ec1f479e550cfc5565b17, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  moneyPrefab: {fileID: 0}
+  moneyStackOffset: {x: 0, y: 0.5, z: 0}
+  moneyScale: 18
+--- !u!65 &354549476
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 354549473}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &461800357
 GameObject:
   m_ObjectHideFlags: 0
@@ -1291,9 +1329,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f77fed6dff99e74419e7a45afc8eca3d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemPrefab: {fileID: 0}
+  handcuffsPrefab: {fileID: 0}
   stackOffset: {x: 0, y: 1, z: 0}
-  handcuffsScale: 3
+  handcuffsScale: 6
 --- !u!1 &734250101
 GameObject:
   m_ObjectHideFlags: 0
@@ -1897,10 +1935,11 @@ MonoBehaviour:
   npcPrefab: {fileID: 6702635459858530726, guid: b11e1113ec549b04c896e5d3295e27ed,
     type: 3}
   maxNPCCount: 5
-  npcSpacing: 20
+  npcSpacing: 10
   npcYPosition: 1
   npcScale: 2
   spawnStartPos: {x: 0, y: 0, z: 0}
+  prisonTarget: {fileID: 1199863248}
   spawnAxis: 0
 --- !u!1 &865524267
 GameObject:
@@ -1951,7 +1990,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 20
   childScale: {x: 7, y: 7, z: 7}
-  deadZone: 15
+  deadZone: 10
 --- !u!143 &865524270
 CharacterController:
   m_ObjectHideFlags: 0
@@ -2002,7 +2041,7 @@ MonoBehaviour:
   afterItemZone: {fileID: 701914450}
   handcuffsOffset: {x: 2, y: 1, z: 5}
   handcuffsStackOffset: {x: 0, y: 1, z: 0}
-  handcuffsScale: 3
+  handcuffsScale: 6
 --- !u!1 &870168300
 GameObject:
   m_ObjectHideFlags: 0
@@ -2716,7 +2755,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 10, y: 0.5, z: 0}
-  m_LocalScale: {x: 8, y: 1, z: 3}
+  m_LocalScale: {x: 6, y: 1, z: 3}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 848368366}
@@ -3440,8 +3479,8 @@ Transform:
   m_GameObject: {fileID: 1307316471}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.5, z: 10.2}
-  m_LocalScale: {x: 5, y: 1, z: 0.2}
+  m_LocalPosition: {x: 0, y: 0.5, z: -6.74}
+  m_LocalScale: {x: 10, y: 1, z: 0.2}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 354549474}
@@ -3545,8 +3584,8 @@ Transform:
   m_GameObject: {fileID: 1470118237}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.5, z: 15}
-  m_LocalScale: {x: 5, y: 1, z: 0.2}
+  m_LocalPosition: {x: 0.3, y: 0.5, z: 6.2}
+  m_LocalScale: {x: 10, y: 1, z: 0.2}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 354549474}
@@ -4506,6 +4545,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1852752257}
   - component: {fileID: 1852752258}
+  - component: {fileID: 1852752259}
   m_Layer: 0
   m_Name: SelICounter
   m_TagString: SellCounter
@@ -4548,8 +4588,22 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
+  m_Size: {x: 20, y: 1, z: 15}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1852752259
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1852752256}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe2ba0956bae0974c949f781179b7656, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  moneyZone: {fileID: 354549475}
+  npcSpawner: {fileID: 848368367}
 --- !u!1 &1853988386
 GameObject:
   m_ObjectHideFlags: 0
@@ -4578,8 +4632,8 @@ Transform:
   m_GameObject: {fileID: 1853988386}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 2.5, y: 0.5, z: 12.6}
-  m_LocalScale: {x: 0.2, y: 1, z: 5}
+  m_LocalPosition: {x: 5.17, y: 0.5, z: 0.24}
+  m_LocalScale: {x: 0.2, y: 1, z: 13}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 354549474}
@@ -5030,8 +5084,8 @@ Transform:
   m_GameObject: {fileID: 1882006945}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -2.5, y: 0.5, z: 12.6}
-  m_LocalScale: {x: 0.2, y: 1, z: 5}
+  m_LocalPosition: {x: -4.8, y: 0.5, z: -0.67}
+  m_LocalScale: {x: 0.2, y: 1, z: 13}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 354549474}

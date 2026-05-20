@@ -5,9 +5,9 @@ using UnityEngine;
 public class AfterItemZone : MonoBehaviour
 {
     [Header("스폰 설정")]
-    public GameObject itemPrefab;          // 스폰할 새 아이템 프리팹
-    public Vector3 stackOffset = new Vector3(0f, 1f, 0f);  // 쌓기 간격
-    public float handcuffsScale = 6f;           // 아이템 크기
+    public GameObject handcuffsPrefab;
+    public Vector3 stackOffset = new Vector3(0f, 1f, 0f);
+    public float handcuffsScale = 6f;
 
     private List<GameObject> spawnedHandcuffs = new List<GameObject>();
     private bool isTransferring = false;
@@ -15,12 +15,8 @@ public class AfterItemZone : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        itemPrefab = Resources.Load<GameObject>("PrisonHandcuffs");
-        if (itemPrefab != null)
-        {
-            Debug.Log("PrisonHandcuffs Complete");
-        }
-        else
+        handcuffsPrefab = Resources.Load<GameObject>("PrisonHandcuffs");
+        if (handcuffsPrefab == null)
         {
             Debug.LogError("PrisonHandcuffs Null");
         }
@@ -35,7 +31,7 @@ public class AfterItemZone : MonoBehaviour
 
         for (int i = 0; i < count; i++)
         {
-            GameObject item = Instantiate(itemPrefab, zoneCenter, Quaternion.identity);
+            GameObject item = Instantiate(handcuffsPrefab, zoneCenter, Quaternion.identity);
             item.transform.parent = transform;
 
             // Zone 중심 기준으로 쌓기
@@ -48,7 +44,7 @@ public class AfterItemZone : MonoBehaviour
             spawnedHandcuffs.Add(item);
         }
 
-        Debug.Log($"AfterItemZone 아이템 {count}개 스폰 완료");
+        //Debug.Log($"AfterItemZone 아이템 {count}개 스폰 완료");
     }
 
     Vector3 GetZoneCenter()
