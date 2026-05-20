@@ -6,8 +6,8 @@ public class AfterItemZone : MonoBehaviour
 {
     [Header("스폰 설정")]
     public GameObject itemPrefab;          // 스폰할 새 아이템 프리팹
-    public Vector3 stackOffset = new Vector3(0f, 2f, 0f);  // 쌓기 간격
-    public float handcuffsScale = 3f;           // 아이템 크기
+    public Vector3 stackOffset = new Vector3(0f, 1f, 0f);  // 쌓기 간격
+    public float handcuffsScale = 6f;           // 아이템 크기
 
     private List<GameObject> spawnedHandcuffs = new List<GameObject>();
     private bool isTransferring = false;

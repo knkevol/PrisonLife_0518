@@ -1,7 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using TMPro;
+using UnityEngine;
+using static UnityEditor.Progress;
 
 public class StoneCollector : MonoBehaviour
 {
@@ -28,14 +29,14 @@ public class StoneCollector : MonoBehaviour
 
     [Header("앞쪽 아이템 쌓기 설정")]
     public Vector3 handcuffsOffset = new Vector3(2f, 1f, 5f);   // 첫번째 아이템 위치 (앞쪽)
-    public Vector3 handcuffsStackOffset = new Vector3(0f, 1.5f, 0f);    // 쌓기 간격
-    public float handcuffsScale = 3f;
+    public Vector3 handcuffsStackOffset = new Vector3(0f, 1f, 0f);    // 쌓기 간격
+    public float handcuffsScale = 6f;
 
     private Camera mainCamera;
     private bool isShowMax = false;
     private bool isTransferring = false; // 중복 이전 방지
     private List<GameObject> collectedStones = new List<GameObject>();
-    private List<GameObject> handcuffs= new List<GameObject>();     // 앞쪽 아이템 리스트
+    private List<GameObject> collectedHandcuffs = new List<GameObject>();     // 앞쪽 아이템 리스트
 
     // Start is called before the first frame update
     void Start()
@@ -149,7 +150,7 @@ public class StoneCollector : MonoBehaviour
     }
 
     public int GetStoneCount() => currentStones;
-    public int GetFrontItemCount() => handcuffs.Count;
+    public int GetFrontItemCount() => collectedHandcuffs.Count;
 
     private void OnDrawGizmos()
     {
@@ -162,9 +163,8 @@ public class StoneCollector : MonoBehaviour
         Debug.Log($"보유한 돌 양: {collectedStones.Count}");
         Debug.Log($"[트리거] 부딪힌 물체 이름: {other.gameObject.name} | 태그: {other.tag}");
 
-        Transform zoneTransform = GetZoneTransform(other.transform, "BeforeItemZone");
-
-        if (zoneTransform != null && !isTransferring)
+        Transform beforeZone = GetZoneTransform(other.transform, "BeforeItemZone");
+        if (beforeZone != null && !isTransferring)
         {
             if (collectedStones.Count == 0)
             {
@@ -172,7 +172,7 @@ public class StoneCollector : MonoBehaviour
                 return;
             }
 
-            StartCoroutine(TransferStonesToZone(zoneTransform));
+            StartCoroutine(TransferStonesToZone(beforeZone));
         }
 
         Transform afterZone = GetZoneTransform(other.transform, "AfterItemZone");
@@ -185,6 +185,60 @@ public class StoneCollector : MonoBehaviour
             }
             return;
         }
+
+        Transform counterZone = GetZoneTransform(other.transform, "SellCounter");
+        if (counterZone != null && !isTransferring)
+        {
+            if (collectedHandcuffs.Count == 0)
+            {
+                Debug.Log("handcuffs.Count == 0");
+                return;
+            }
+
+            StartCoroutine(TransferHandcuffsToZone(counterZone));
+        }
+    }
+
+    IEnumerator TransferHandcuffsToZone(Transform zoneTransform)
+    {
+        isTransferring = true;
+
+        Debug.Log($"수갑 {collectedHandcuffs.Count}개 이전 시작");
+
+        for (int i = 0; i < collectedHandcuffs.Count; i++)
+        {
+            GameObject handcuffs = collectedHandcuffs[i];
+
+            if (handcuffs == null)
+                continue;
+
+            Debug.Log($"[{i}] 이전 전 부모: {handcuffs.transform.parent?.name}");
+            handcuffs.transform.parent = zoneTransform; // SellCounter를 부모로
+            Debug.Log($"[{i}] 부모 변경 후: {handcuffs.transform.parent?.name}");
+
+            Vector3 localPos = handcuffsStackOffset + (handcuffsStackOffset * i);
+            handcuffs.transform.localPosition = localPos;
+            handcuffs.transform.localRotation = Quaternion.identity;
+            handcuffs.transform.localScale = Vector3.one * handcuffsScale;
+
+            Debug.Log($"[{i}] localPosition: {handcuffs.transform.localPosition}");
+            Debug.Log($"[{i}] worldPosition: {handcuffs.transform.position}");
+            Debug.Log($"worldScale: {handcuffs.transform.lossyScale}");
+
+            // Collider 다시 비활성화 유지
+            Collider col = handcuffs.GetComponent<Collider>();
+            if (col != null)
+            {
+                col.enabled = false;
+            }
+
+            yield return new WaitForSeconds(0.05f);
+        }
+
+        isTransferring = false;
+
+        // 리스트 초기화
+        ClearHandcuffs();
     }
 
     IEnumerator TransferItemsToFront(AfterItemZone zone)
@@ -192,7 +246,7 @@ public class StoneCollector : MonoBehaviour
         isTransferring = true;
 
         List<GameObject> items = new List<GameObject>(zone.GetItems());
-        Debug.Log($"이전할 아이템 수: {items.Count}");
+        //Debug.Log($"이전할 아이템 수: {items.Count}");
 
         for (int i = 0; i < items.Count; i++)
         {
@@ -203,18 +257,18 @@ public class StoneCollector : MonoBehaviour
                 continue;
             }
 
-            Debug.Log($"[{i}] 이전 전 부모: {item.transform.parent?.name}");
+            //Debug.Log($"[{i}] 이전 전 부모: {item.transform.parent?.name}");
             item.transform.parent = transform; // 플레이어로 부모 변경
-            Debug.Log($"[{i}] 부모 변경 후: {item.transform.parent?.name}");
+            //Debug.Log($"[{i}] 부모 변경 후: {item.transform.parent?.name}");
 
-            Vector3 localPos = handcuffsOffset + handcuffsStackOffset * (handcuffs.Count);
+            Vector3 localPos = handcuffsOffset + handcuffsStackOffset * (collectedHandcuffs.Count);
             item.transform.localPosition = localPos;
             item.transform.localRotation = Quaternion.identity;
             item.transform.localScale = Vector3.one * handcuffsScale;
 
-            Debug.Log($"[{i}] localPosition: {item.transform.localPosition}");
-            Debug.Log($"[{i}] worldPosition: {item.transform.position}");
-            Debug.Log($"worldScale: {item.transform.lossyScale}");
+            //Debug.Log($"[{i}] localPosition: {item.transform.localPosition}");
+            //Debug.Log($"[{i}] worldPosition: {item.transform.position}");
+            //Debug.Log($"worldScale: {item.transform.lossyScale}");
 
             Collider col = item.GetComponent<Collider>();
             if (col != null)
@@ -222,14 +276,9 @@ public class StoneCollector : MonoBehaviour
                 col.enabled = false;
             }
 
-            handcuffs.Add(item);
+            collectedHandcuffs.Add(item);
 
             yield return new WaitForSeconds(0.05f);
-
-            if (item == null)
-                Debug.Log($"[{i}] yield 후 item 사라짐 → 외부에서 Destroy됨");
-            else
-                Debug.Log($"[{i}] yield 후 위치: {item.transform.position}");
         }
         
         // AfterItemZone 비우기
@@ -258,7 +307,7 @@ public class StoneCollector : MonoBehaviour
     {
         isTransferring = true;
 
-        Debug.Log($"BeforeItemZone으로 돌 {collectedStones.Count}개 이전 시작");
+        Debug.Log($"돌 {collectedStones.Count}개 이전 시작");
 
         int stoneCount = collectedStones.Count;
 
@@ -302,7 +351,6 @@ public class StoneCollector : MonoBehaviour
 
         // 리스트 초기화
         ClearStones();
-        collectedStones.Clear();
         currentStones = 0;
     }
 
@@ -312,6 +360,14 @@ public class StoneCollector : MonoBehaviour
             if (item != null) Destroy(item);
 
         collectedStones.Clear();
+    }
+
+    void ClearHandcuffs()
+    {
+        //foreach (var item in collectedHandcuffs)
+        //    if (item != null) Destroy(item);
+
+        collectedHandcuffs.Clear();
     }
 
     public void ConsumeAllStones()

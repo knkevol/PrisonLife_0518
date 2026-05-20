@@ -11,6 +11,7 @@ TagManager:
   - BeforeItemZone
   - AfterItemZone
   - ItemZone
+  - SellCounter
   layers:
   - Default
   - TransparentFX
