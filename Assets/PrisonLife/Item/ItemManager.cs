@@ -38,7 +38,7 @@ public class ItemManager : MonoBehaviour
             if (zone.IsBuy()) continue;
 
             // 보유 금액 >= 아이템 가격이면 활성화
-            if (currentMoney >= zone.GetCurrentPrice())
+            if (currentMoney >= zone.GetCurrentPrice() && zone.GetCurrentPrice() > 0)
             {
                 zone.SetZoneActive(true);
                 Debug.Log($"Zone 활성화 → 현재 아이템 가격: {zone.GetCurrentPrice()}");

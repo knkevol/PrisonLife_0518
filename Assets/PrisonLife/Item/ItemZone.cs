@@ -16,6 +16,7 @@ public class ItemZone : MonoBehaviour
 
     private Camera mainCamera;
     private bool isBuy = false;  // 구매 완료 여부
+    private bool isAllBuy = false;  // 구매 완료 여부
     private int currentItemIndex = 0; // 구매 가능한 아이템 인덱스
 
 
@@ -87,7 +88,7 @@ public class ItemZone : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (isBuy) return;
+        if (isAllBuy) return;
         if (!other.CompareTag("PrisonPlayer")) return;
         if (itemDataList == null || currentItemIndex >= itemDataList.Count) return;
 
@@ -115,7 +116,7 @@ public class ItemZone : MonoBehaviour
             case ItemData.ItemType.Equipment:
                 if (item.equipmentData != null)
                 {
-                    EquipmentManager.Instance?.ShowEquipment();
+                    //EquipmentManager.Instance?.ShowEquipment();
                     EquipmentManager.Instance?.EquipItem(item.equipmentData);
                 }
                 break;
@@ -128,12 +129,22 @@ public class ItemZone : MonoBehaviour
                 break;
         }
 
+        Debug.Log($"아이템인덱스: {currentItemIndex} / 아이템리스트 갯수: {itemDataList.Count}");
         currentItemIndex++;
+        Debug.Log($"아이템인덱스++: {currentItemIndex} / 아이템리스트 갯수: {itemDataList.Count}");
 
-        // Zone 비활성화
-        SetZoneActive(false);
-        UpdateUI();
+        if (currentItemIndex >= itemDataList.Count)
+        {
+            Debug.Log($"currentItemIndex >= itemDataList.Count");
+            isAllBuy = true;
+            SetZoneActive(false);
+        }
+        else
+        {
+            UpdateUI();
+        }
         ItemManager.Instance?.OnItemBuy(this);
     }
     public bool IsBuy() => isBuy;
+    public bool IsAllBuy() => isAllBuy;
 }
