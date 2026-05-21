@@ -31,17 +31,6 @@ public class SellCounter : MonoBehaviour
             moneyZone = FindObjectOfType<MoneyZone>();
     }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        //Debug.Log($"SellCounter 와 부딪힌 오브젝트 {other.gameObject.name}");
-        
-        //if (other.CompareTag("PrisonPlayer"))
-        //{
-        //    Debug.Log("플레이어 SellCounter 진입 → 구매 체크 시작");
-        //    TryBuy();
-        //}
-    }
-
     public void AddHandcuffs(List<GameObject> handcuffs)
     {
         handcuffsList.AddRange(handcuffs);

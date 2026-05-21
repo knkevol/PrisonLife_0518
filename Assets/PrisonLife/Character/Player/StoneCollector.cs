@@ -10,10 +10,15 @@ public class StoneCollector : MonoBehaviour
     public int maxStones = 10;
     private int currentStones = 0;
 
-    [Header("돌 쌓이는 위치")]
-    public Vector3 firstStoneOffset = new Vector3(0f, 0.5f, -5f);
+    [Header("뒤쪽 아이템 쌓기 설정")]
+    public Vector3 firstStoneOffset = new Vector3(0f, 0.5f, -3f);
     public Vector3 stackOffset = new Vector3(0f, 2f, 0f);
     public float stoneScale = 13f;
+
+    [Header("앞쪽 아이템 쌓기 설정")]
+    public Vector3 handcuffsOffset = new Vector3(2f, 1f, 5f);   // 첫번째 아이템 위치 (앞쪽)
+    public Vector3 handcuffsStackOffset = new Vector3(0f, 1f, 0f);    // 쌓기 간격
+    public float handcuffsScale = 6f;
 
     [Header("MAX Text")]
     public GameObject maxCanvas;
@@ -21,22 +26,19 @@ public class StoneCollector : MonoBehaviour
     public Vector3 maxTextOffset = new Vector3(0f, 2f, 0f);
 
     [Header("BeforeItemZone")]
-    public Vector3 zoneStackOffset = new Vector3(0f, 2f, 0f);  // Zone내 돌 쌓기 간격
+    public Vector3 zoneStackOffset = new Vector3(0f, 2f, 0f);
     public float zoneStoneScale = 8f;
 
     [Header("AfterItemZone")]
     public AfterItemZone afterItemZone;
 
-    [Header("앞쪽 아이템 쌓기 설정")]
-    public Vector3 handcuffsOffset = new Vector3(2f, 1f, 5f);   // 첫번째 아이템 위치 (앞쪽)
-    public Vector3 handcuffsStackOffset = new Vector3(0f, 1f, 0f);    // 쌓기 간격
-    public float handcuffsScale = 6f;
+    
 
     private Camera mainCamera;
     private bool isShowMax = false;
     private bool isTransferring = false; // 중복 이전 방지
     private List<GameObject> collectedStones = new List<GameObject>();
-    private List<GameObject> collectedHandcuffs = new List<GameObject>();     // 앞쪽 아이템 리스트
+    private List<GameObject> collectedHandcuffs = new List<GameObject>();
 
     // Start is called before the first frame update
     void Start()
@@ -98,7 +100,6 @@ public class StoneCollector : MonoBehaviour
             return false; // 수정예정 :: 수집 but max 띄우기
         }
 
-        MoneyManager.Instance.AddMoney(100); // 판매로직 옮겨야됨 --------------------------
         // 돌을 캐릭터 등 뒤로 이동
         stone.tag = "Untagged"; // 중복 수집 방지
         stone.transform.parent = transform; // 캐릭터 자식으로
@@ -160,7 +161,6 @@ public class StoneCollector : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        //Debug.Log($"보유한 돌 양: {collectedStones.Count}");
         //Debug.Log($"[트리거] 부딪힌 물체 이름: {other.gameObject.name} | 태그: {other.tag}");
 
         Transform beforeZone = GetZoneTransform(other.transform, "BeforeItemZone");

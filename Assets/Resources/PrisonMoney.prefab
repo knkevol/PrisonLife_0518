@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 450601811953768700}
   m_Layer: 0
   m_Name: PrisonMoney
-  m_TagString: Untagged
+  m_TagString: PrisonMoney
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

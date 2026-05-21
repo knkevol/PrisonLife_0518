@@ -12,6 +12,8 @@ TagManager:
   - AfterItemZone
   - ItemZone
   - SellCounter
+  - MoneyZone
+  - PrisonMoney
   layers:
   - Default
   - TransparentFX

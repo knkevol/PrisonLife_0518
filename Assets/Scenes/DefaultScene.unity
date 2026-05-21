@@ -765,7 +765,7 @@ GameObject:
   - component: {fileID: 354549476}
   m_Layer: 0
   m_Name: MoneyZone
-  m_TagString: Untagged
+  m_TagString: MoneyZone
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -804,6 +804,7 @@ MonoBehaviour:
   moneyPrefab: {fileID: 0}
   moneyStackOffset: {x: 0, y: 0.5, z: 0}
   moneyScale: 18
+  moneyBackOffset: {x: 0, y: 0.5, z: -6}
 --- !u!65 &354549476
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -823,7 +824,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
+  m_Size: {x: 10, y: 1, z: 15}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &461800357
 GameObject:
@@ -2208,18 +2209,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxStones: 10
-  firstStoneOffset: {x: 0, y: 0.5, z: -5}
+  firstStoneOffset: {x: 0, y: 0.5, z: -3}
   stackOffset: {x: 0, y: 2, z: 0}
   stoneScale: 13
+  handcuffsOffset: {x: 2, y: 1, z: 5}
+  handcuffsStackOffset: {x: 0, y: 1, z: 0}
+  handcuffsScale: 6
   maxCanvas: {fileID: 811172368}
   maxText: {fileID: 1859416768}
   maxTextOffset: {x: 0, y: 2, z: 0}
   zoneStackOffset: {x: 0, y: 2, z: 0}
   zoneStoneScale: 8
   afterItemZone: {fileID: 701914450}
-  handcuffsOffset: {x: 2, y: 1, z: 5}
-  handcuffsStackOffset: {x: 0, y: 1, z: 0}
-  handcuffsScale: 6
 --- !u!1 &870168300
 GameObject:
   m_ObjectHideFlags: 0

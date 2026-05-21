@@ -42,7 +42,7 @@ public class NPCController : MonoBehaviour
     public void Initialize(NPCSpawner npcSpawner)
     {
         spawner = npcSpawner;
-        targetPosition = transform.position;
+        targetPosition = transform.position; // 기본 위치
     }
 
     public void SetTargetPosition(Vector3 newTargetPos)
