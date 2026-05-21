@@ -40,6 +40,8 @@ public class StoneCollector : MonoBehaviour
     private List<GameObject> collectedStones = new List<GameObject>();
     private List<GameObject> collectedHandcuffs = new List<GameObject>();
 
+    private bool isInStoneZone = false; // StoneZone 진입 감지
+
     // Start is called before the first frame update
     void Start()
     {
@@ -72,10 +74,14 @@ public class StoneCollector : MonoBehaviour
     void DetectNearbyStones()
     {
 
-        //Debug.Log($"DetectNearbyStones()");
-        // 캐릭터 주변 반경 1f 안의 Stone 태그 오브젝트 감지
-        // 언리얼의 SphereTraceByChannel과 동일한 개념
+        if (!isInStoneZone)
+        {
+            return;
+        }
+
+        // == 언리얼 SphereTraceByChannel
         Collider[] hits = Physics.OverlapSphere(transform.position, 1f);
+        bool stoneNearby = false;
 
         foreach (Collider hit in hits)
         {
@@ -86,9 +92,19 @@ public class StoneCollector : MonoBehaviour
                 if (stone != null && !stone.isCollected)
                 {
                     stone.isCollected = true;
+                    stoneNearby = true;
                     TryCollectStone(hit.gameObject);
                 }
             }
+        }
+
+        if (stoneNearby)
+        {
+            EquipmentManager.Instance?.StartEuqipMoving();
+        }
+        else
+        {
+            EquipmentManager.Instance?.StopEuqipMoving();
         }
     }
 
@@ -196,6 +212,22 @@ public class StoneCollector : MonoBehaviour
             }
 
             StartCoroutine(TransferHandcuffsToZone(counterZone));
+        }
+
+        if (other.CompareTag("StoneZone"))
+        {
+            isInStoneZone = true;
+            EquipmentManager.Instance?.ShowEquipment();
+            Debug.Log("StoneZone 진입 → 장비 표시");
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if(other.CompareTag("StoneZone"))
+        {
+            isInStoneZone = false;
+            EquipmentManager.Instance?.HideEquipment();
         }
     }
 

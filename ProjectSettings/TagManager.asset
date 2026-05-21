@@ -14,6 +14,7 @@ TagManager:
   - SellCounter
   - MoneyZone
   - PrisonMoney
+  - StoneZone
   layers:
   - Default
   - TransparentFX
