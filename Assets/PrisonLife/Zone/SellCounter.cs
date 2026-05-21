@@ -69,38 +69,57 @@ public class SellCounter : MonoBehaviour
             return;
         }
 
-        // 가장 우측 NPC 가져오기
-        NPCController rightNPC = npcSpawner.GetRightmostNPC();
+        StartCoroutine(TryBuyCoroutine());
+    }
 
-        if (rightNPC == null)
+    IEnumerator TryBuyCoroutine()
+    {
+        int npcCount = npcSpawner.GetActiveNPCCount();
+
+        for (int i = 0; i < npcCount; i++)
         {
-            Debug.Log("NPC 없음");
-            return;
-        }
+            if (handcuffsList.Count == 0)
+            {
+                Debug.Log("수갑 소진");
+                yield break;
+            }
 
-        if (rightNPC.currentState != NPCController.NPCState.Waiting) return;
+            NPCController rightNPC = npcSpawner.GetRightmostNPC();
+            if (rightNPC == null)
+            {
+                Debug.Log("NPC 없음");
+                yield break;
+            }
 
-        int desired = rightNPC.desiredAmount;
-        int available = handcuffsList.Count;
+            if (rightNPC.currentState != NPCController.NPCState.Waiting)
+            {
+                yield break;
+            }
 
-        Debug.Log($"구매 시도 → NPC 요청: {desired}개 / 보유: {available}개");
+            int desired = rightNPC.desiredAmount;
+            int available = handcuffsList.Count;
 
-        if (available >= desired)
-        {
-            // 구매 성공
-            RemoveHandcuffs(desired);
+            Debug.Log($"구매 시도 → NPC 요청: {desired}개 / 보유: {available}개");
 
-            // MoneyZone에 돈 쌓기
-            if (moneyZone != null)
-                moneyZone.AddMoneyPrefab(desired);
+            if (available >= desired)
+            {
+                // 구매 성공
+                RemoveHandcuffs(desired);
 
-            // NPC Moving 상태로 변경
-            rightNPC.StartMoveToPrison(npcSpawner.GetPrisonTarget());
+                if (moneyZone != null)
+                    moneyZone.AddMoneyPrefab(desired);
 
-            // NPCSpawner에 이탈 알림
-            npcSpawner.OnNPCLeave(rightNPC.gameObject);
+                npcSpawner.OnNPCLeave(rightNPC.gameObject);
 
-            Debug.Log($"구매 완료 → {desired}개 / 돈 {desired * 10}원 지급");
+                Debug.Log($"구매 완료 → {desired}개 / {desired * 10}원");
+
+                yield return new WaitForSeconds(3f);
+            }
+            else
+            {
+                Debug.Log($"수갑 부족 → 필요: {desired} / 보유: {available}");
+                yield break;
+            }
         }
     }
 

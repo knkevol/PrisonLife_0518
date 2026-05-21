@@ -15,8 +15,9 @@ public class NPCSpawner : MonoBehaviour
 
     [Header("PrisonZone 정보")]
     public Transform prisonTarget;
-    public enum SpawnAxis { X, Z }
-    public SpawnAxis spawnAxis = SpawnAxis.X;
+
+    [Header("이동 경로")]
+    public WaypointPath npcPath;
 
     // 현재 SellZone에 있는 NPC 목록
     private List<GameObject> activeNPCs = new List<GameObject>();
@@ -82,7 +83,7 @@ public class NPCSpawner : MonoBehaviour
     }
 
     // 실제 활성화된 NPC 수 체크 (null 제거 포함)
-    int GetActiveNPCCount()
+    public int GetActiveNPCCount()
     {
         activeNPCs.RemoveAll(npc => npc == null);
         return activeNPCs.Count;
@@ -159,6 +160,7 @@ public class NPCSpawner : MonoBehaviour
     // 구매완료 한 NPC 이동
     public void OnNPCLeave(GameObject npc)
     {
+        NPCController rightNPC = GetRightmostNPC();
         if (activeNPCs.Contains(npc))
         {
             activeNPCs.Remove(npc);
@@ -172,15 +174,14 @@ public class NPCSpawner : MonoBehaviour
             if (activeNPCs[i] != null)
             {
                 NPCController controller = activeNPCs[i].GetComponent<NPCController>();
-                if (controller != null)
+                
+                if (controller != null && npcPath != null)
                 {
-                    // 맨 앞(0번)에 새로 스폰된 녀석은 이제 인덱스 0번 자리가 아니라 
-                    // 한 칸 밀린 1번 자리(startX + 1 * spacing)가 되어야 합니다.
-                    // 즉, 현재 리스트의 인덱스보다 '한 칸 앞선(우측)' 좌표를 새 목표로 줍니다.
                     float nextX = startX + ((i + 1) * npcSpacing);
                     Vector3 newTarget = new Vector3(nextX, npcSpawnerCenter.y + npcYPosition, npcSpawnerCenter.z);
-
                     controller.SetTargetPosition(newTarget);
+                    rightNPC.StartMoveToPrison(npcPath.GetWaypoints());
+                    
                 }
             }
         }
