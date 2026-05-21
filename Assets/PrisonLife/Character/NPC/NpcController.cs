@@ -16,6 +16,7 @@ public class NPCController : MonoBehaviour
     [Header("PrisonZone 이동")]
     public float moveSpeed = 10f;
     public Transform prisonZoneTarget; // PrisonZone 입장 위치
+    private Vector3 targetPosition; // NPC가 이동해야 할 목표 위치(대기열)
 
     private Camera mainCamera;
     private NPCSpawner spawner;        // 소속 Spawner 참조
@@ -24,7 +25,8 @@ public class NPCController : MonoBehaviour
     {
         Waiting,    // SellZone 대기
         Moving,     // PrisonZone 이동중
-        NoCell      // PrisonZone 가득 참
+        NoCell,      // PrisonZone 가득 참
+        Next        // 대기열 이동
     }
 
     public NPCState currentState = NPCState.Waiting;
@@ -40,6 +42,21 @@ public class NPCController : MonoBehaviour
     public void Initialize(NPCSpawner npcSpawner)
     {
         spawner = npcSpawner;
+        targetPosition = transform.position;
+    }
+
+    public void SetTargetPosition(Vector3 newTargetPos)
+    {
+        targetPosition = newTargetPos;
+    }
+
+    private void Update()
+    {
+        transform.position = Vector3.MoveTowards(
+            transform.position,
+            targetPosition,
+            moveSpeed * Time.deltaTime
+        );
     }
 
     void LateUpdate()
@@ -57,11 +74,7 @@ public class NPCController : MonoBehaviour
     void MovePrisonZone()
     {
         Vector3 targetPos = prisonZoneTarget.position;
-        transform.position = Vector3.MoveTowards(
-            transform.position,
-            targetPos,
-            moveSpeed * Time.deltaTime
-        );
+        SetTargetPosition(targetPos);
 
         // 목적지 도착 확인
         if (Vector3.Distance(transform.position, targetPos) < 0.1f)
@@ -107,7 +120,6 @@ public class NPCController : MonoBehaviour
         prisonZoneTarget = target;
         currentState = NPCState.Moving;
         bubbleCanvas.gameObject.SetActive(false);
-        //UpdateBubbleText(""); // 말풍선 비우기
     }
 
     public void ShowNoCell()

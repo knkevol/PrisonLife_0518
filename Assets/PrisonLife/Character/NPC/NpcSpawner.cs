@@ -95,9 +95,24 @@ public class NPCSpawner : MonoBehaviour
         float startX = npcSpawnerCenter.x - npcSpawnerSize.x / 2f + npcSpacing / 2f;
         float endX = npcSpawnerCenter.x + npcSpawnerSize.x / 2f;
 
-        // 이번 NPC가 배치될X 좌표
-        float targetX = startX + (index * npcSpacing);
+        for (int i = 0; i < activeNPCs.Count; i++)
+        {
+            if (activeNPCs[i] != null)
+            {
+                NPCController currentController = activeNPCs[i].GetComponent<NPCController>();
+                float nextX = startX + ((i + 1) * npcSpacing);
 
+                if (nextX >= endX)
+                {
+                    Debug.LogWarning($"{i}번 NPC endX넘어감");
+                }
+
+                Vector3 newTarget = new Vector3(nextX, npcSpawnerCenter.y + npcYPosition, npcSpawnerCenter.z);
+                currentController.SetTargetPosition(newTarget);
+            }
+        }
+
+        float targetX = startX; // 항상 왼쪽에 생성
         if (targetX >= endX)
         {
             Debug.LogWarning("Not SellZone");
@@ -119,7 +134,7 @@ public class NPCSpawner : MonoBehaviour
             controller.Initialize(this);
         }
 
-        activeNPCs.Add(npc);
+        activeNPCs.Insert(0, npc);
         //Debug.Log($"함수 끝 직전 실좌표: {npc.transform.position}, 실스케일: {npc.transform.localScale}");
     }
 
@@ -148,6 +163,26 @@ public class NPCSpawner : MonoBehaviour
         {
             activeNPCs.Remove(npc);
             Debug.Log($"NPC PrisonZone 이동 → 현재 NPC 수: {activeNPCs.Count}");
+        }
+
+        float startX = npcSpawnerCenter.x - npcSpawnerSize.x / 2f + npcSpacing / 2f;
+
+        for (int i = 0; i < activeNPCs.Count; i++)
+        {
+            if (activeNPCs[i] != null)
+            {
+                NPCController controller = activeNPCs[i].GetComponent<NPCController>();
+                if (controller != null)
+                {
+                    // 맨 앞(0번)에 새로 스폰된 녀석은 이제 인덱스 0번 자리가 아니라 
+                    // 한 칸 밀린 1번 자리(startX + 1 * spacing)가 되어야 합니다.
+                    // 즉, 현재 리스트의 인덱스보다 '한 칸 앞선(우측)' 좌표를 새 목표로 줍니다.
+                    float nextX = startX + ((i + 1) * npcSpacing);
+                    Vector3 newTarget = new Vector3(nextX, npcSpawnerCenter.y + npcYPosition, npcSpawnerCenter.z);
+
+                    controller.SetTargetPosition(newTarget);
+                }
+            }
         }
 
         FillNPC();
