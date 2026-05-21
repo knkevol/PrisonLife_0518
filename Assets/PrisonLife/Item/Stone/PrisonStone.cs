@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class PrisonStone : MonoBehaviour
 {
-
+    private StoneSpawner spawner;
+    private int poolIndex;
     public bool isCollected = false;
     // Start is called before the first frame update
     void Start()
@@ -18,19 +19,27 @@ public class PrisonStone : MonoBehaviour
         
     }
 
+    public void Initialize(StoneSpawner stoneSpawner, int index)
+    {
+        spawner = stoneSpawner;
+        poolIndex = index;
+    }
+
     private void OnTriggerStay(Collider other)
     {
-        if (isCollected) return; // 이미 수집됐으면 무시
-
-        Debug.Log($"OnTriggerStay: {other.gameObject.name}");
+        if (isCollected)
+        {
+            return;
+        }
 
         if (other.CompareTag("PrisonPlayer"))
         {
             StoneCollector collector = other.GetComponent<StoneCollector>();
             if (collector != null)
             {
-                isCollected = true; // 먼저 플래그 세움 (중복 방지)
+                isCollected = true;
                 collector.TryCollectStone(gameObject);
+                spawner?.OnStoneCollected(poolIndex);
             }
         }
     }

@@ -13,7 +13,7 @@ public class StoneCollector : MonoBehaviour
     [Header("뒤쪽 아이템 쌓기 설정")]
     public Vector3 firstStoneOffset = new Vector3(0f, 0.5f, -3f);
     public Vector3 stackOffset = new Vector3(0f, 2f, 0f);
-    public float stoneScale = 13f;
+    public Vector3 stoneScale = new Vector3(20f, 10f, 20f);
 
     [Header("앞쪽 아이템 쌓기 설정")]
     public Vector3 handcuffsOffset = new Vector3(2f, 1f, 5f);   // 첫번째 아이템 위치 (앞쪽)
@@ -110,7 +110,6 @@ public class StoneCollector : MonoBehaviour
 
     public bool TryCollectStone(GameObject stone)
     {
-        //Debug.Log($"TryCollectStone()");
         if (currentStones >= maxStones)
         {
             return false; // 수정예정 :: 수집 but max 띄우기
@@ -131,12 +130,11 @@ public class StoneCollector : MonoBehaviour
         Vector3 localPos = firstStoneOffset + stackOffset * currentStones;
         stone.transform.localPosition = localPos;
         stone.transform.localRotation = Quaternion.identity;
-        stone.transform.localScale = Vector3.one * stoneScale;
+        stone.transform.localScale = stoneScale;
 
         collectedStones.Add(stone);
         currentStones++;
 
-        // 20개 도달 시 MAX 표시
         if (currentStones >= maxStones)
         {
             if (maxText != null)
@@ -146,6 +144,8 @@ public class StoneCollector : MonoBehaviour
         Debug.Log($"돌 수집: {currentStones}/{maxStones}");
         return true;
     }
+
+    public bool CanCollect() => currentStones < maxStones;
 
     IEnumerator ShowMaxText()
     {

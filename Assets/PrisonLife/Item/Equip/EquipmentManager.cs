@@ -9,9 +9,6 @@ public class EquipmentManager : MonoBehaviour
     [Header("장비 장착 위치")]
     public Transform equipSlot;       // 장비가 붙을 위치 (캐릭터 손/허리 등)
 
-    [Header("장비 목록")]
-    public List<EquipmentData> equipmentList; // 보유 장비 목록
-
     [Header("기본 장비")]
     public EquipmentData defaultEquipment;    // 기본 장비
 

@@ -2,12 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NewBehaviourScript : MonoBehaviour
+public class StoneSpawner : MonoBehaviour
 {
     [Header("Stone 스폰 설정")]
     public GameObject stonePrefab;
-    public float stoneSpacing = 7f;
+    public float stoneSpacing = 5f;
     public float stoneYPosition = 0.5f;
+    public float respawnDelay = 3f;
+
+    private List<Vector3> spawnPositions = new List<Vector3>();
+
+    // 풀링: 위치 인덱스 → 돌 오브젝트
+    private Dictionary<int, GameObject> stonePool = new Dictionary<int, GameObject>();
+
 
     private Vector3 spawnerCenter;
     private Vector3 spawnerSize;
@@ -21,10 +28,8 @@ public class NewBehaviourScript : MonoBehaviour
     void CalculateBounds()
     {
         Renderer[] renderers = GetComponentsInChildren<Renderer>();
-
         if (renderers.Length == 0)
         {
-            Debug.LogError("CalculateBounds()_StoneZone Renderer Error!");
             return;
         }
 
@@ -34,30 +39,71 @@ public class NewBehaviourScript : MonoBehaviour
             bounds.Encapsulate(r.bounds);
         }
 
-        spawnerCenter = bounds.center;
-        spawnerSize = bounds.size;
+        float startX = bounds.min.x + stoneSpacing / 2f;
+        float startZ = bounds.min.z + stoneSpacing / 2f;
+
+        for (float x = startX; x < bounds.max.x; x += stoneSpacing)
+        {
+            for (float z = startZ; z < bounds.max.z; z += stoneSpacing)
+            {
+                Vector3 pos = new Vector3(x, bounds.center.y + stoneYPosition, z);
+                spawnPositions.Add(pos);
+            }
+        }
 
         Debug.Log($"StoneZone → Center: {spawnerCenter}, Size: {spawnerSize}");
     }
 
     void SpawnStones()
     {
-        float startX = spawnerCenter.x - spawnerSize.x / 2f + stoneSpacing / 2f;
-        float startZ = spawnerCenter.z - spawnerSize.z / 2f + stoneSpacing / 2f;
-        float endX = spawnerCenter.x + spawnerSize.x / 2f;
-        float endZ = spawnerCenter.z + spawnerSize.z / 2f;
-
-        for (float x = startX; x < endX; x += stoneSpacing)
+        for (int i = 0; i < spawnPositions.Count; i++)
         {
-            for (float z = startZ; z < endZ; z += stoneSpacing)
-            {
-                Vector3 spawnPos = new Vector3(x, spawnerCenter.y + stoneYPosition, z);
-                GameObject stone = Instantiate(stonePrefab, spawnPos, Quaternion.identity);
-                stone.tag = "Stone";
-                stone.transform.parent = transform;
-            }
+            GameObject stone = Instantiate(stonePrefab, spawnPositions[i], Quaternion.identity);
+            stone.transform.parent = transform;
+            stone.tag = "Stone";
+
+            // PrisonStone에 인덱스와 Spawner 참조 전달
+            PrisonStone stoneScript = stone.GetComponent<PrisonStone>();
+            if (stoneScript != null)
+                stoneScript.Initialize(this, i);
+
+            stonePool[i] = stone;
         }
     }
+
+    public void OnStoneCollected(int index)
+    {
+        if (!stonePool.ContainsKey(index))
+        {
+            return;
+        }
+
+        stonePool.Remove(index); // 수집된 돌은 플레이어의 자식으로 들어가기 때문에 분리 필요
+
+        // 딜레이 후 리스폰
+        StartCoroutine(RespawnStone(index));
+    }
+
+    IEnumerator RespawnStone(int index)
+    {
+        yield return new WaitForSeconds(respawnDelay);
+
+        GameObject stone = Instantiate(stonePrefab, spawnPositions[index], Quaternion.identity);
+        stone.transform.parent = transform;
+        stone.tag = "Stone";
+
+        PrisonStone stoneScript = stone.GetComponent<PrisonStone>();
+        if (stoneScript != null)
+        {
+            stoneScript.Initialize(this, index);
+        }
+
+        // 풀에 새 돌 등록
+        stonePool[index] = stone;
+
+        Debug.Log($"돌 {index} 리스폰");
+    }
+
 
     private void OnDrawGizmos()
     {
