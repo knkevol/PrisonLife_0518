@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 64877cd699f980445b9590938957c97d, type: 3}
-  m_Name: PrisonEquip
+  m_Name: PrisonEquip2
   m_EditorClassIdentifier: 
-  equipmentName: "\uAE30\uBCF8"
-  prefab: {fileID: 8440785667469639183, guid: 22d18149b9fd966428bb0523747d38fd, type: 3}
-  isDefault: 1
+  equipmentName: "\uBB34\uAE302"
+  prefab: {fileID: 2762118618844980087, guid: c64ac6a0e8200aa43b667e5ac4ad8be3, type: 3}
+  isDefault: 0
   positionOffset: {x: 0, y: 0, z: 0.2}
   rotationOffset: {x: 0, y: 0, z: -150}
   scaleOffset: {x: 3, y: 3, z: 3}

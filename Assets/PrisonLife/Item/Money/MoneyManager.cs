@@ -30,13 +30,21 @@ public class MoneyManager : MonoBehaviour
     {
         currentMoney += amount;
         UpdateMoneyUI();
+
+        ItemManager.Instance?.OnMoneyChanged(currentMoney);
     }
 
     public bool SpendMoney(int amount)
     {
-        if (currentMoney < amount) return false;
+        if (currentMoney < amount)
+        {
+            return false;
+        }
+
         currentMoney -= amount;
         UpdateMoneyUI();
+
+
         return true;
     }
 

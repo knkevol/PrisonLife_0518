@@ -50,7 +50,6 @@ public class EquipmentManager : MonoBehaviour
             currentEquipment.SetOriginPosition(data.positionOffset);
         }
 
-        // 현재 표시 상태 적용
         currentEquipObj.SetActive(isVisible);
 
         Debug.Log($"장비 장착: {data.equipmentName}");
