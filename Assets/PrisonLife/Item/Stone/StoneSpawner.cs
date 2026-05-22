@@ -73,6 +73,7 @@ public class StoneSpawner : MonoBehaviour
 
     public void OnStoneCollected(int index)
     {
+        Debug.LogError("OnStoneCollected");
         if (!stonePool.ContainsKey(index))
         {
             return;

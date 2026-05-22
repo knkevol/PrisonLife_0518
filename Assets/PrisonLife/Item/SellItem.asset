@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: SellItem
   m_EditorClassIdentifier: 
   itemName: SellItem
-  price: 60
-  itemIcon: {fileID: 0}
+  price: 50
+  itemIcon: {fileID: 21300000, guid: e0e6330befa84404498c4bf7b5883c4b, type: 3}
   itemType: 1
   equipmentData: {fileID: 0}
+  itemNPCData: {fileID: 11400000, guid: 28b3bd669544cfa45b1bdf6afbe3b371, type: 2}

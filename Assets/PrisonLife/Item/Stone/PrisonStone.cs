@@ -27,6 +27,7 @@ public class PrisonStone : MonoBehaviour
 
     private void OnTriggerStay(Collider other)
     {
+        Debug.Log($"PrisonStone OnTriggerStay: {other}");
         if (isCollected)
         {
             return;

@@ -22,4 +22,7 @@ public class ItemData : ScriptableObject
 
     [Header("장비 아이템일 경우")]
     public EquipmentData equipmentData; // 장비 데이터 연결
+
+    [Header("NPC 아이템일 경우")]
+    public ItemNPCData itemNPCData; // NPC 데이터 연결
 }

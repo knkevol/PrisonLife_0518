@@ -122,7 +122,10 @@ public class ItemZone : MonoBehaviour
                 break;
 
             case ItemData.ItemType.NPC:
-                // NPC 아이템 처리 (추후 구현)
+                if (item.itemNPCData != null)
+                {
+                    SpawnItemNPC(item.itemNPCData);
+                }
                 break;
             case ItemData.ItemType.Clear:
                 GameManager.Instance?.ShowClearUI();
@@ -151,5 +154,11 @@ public class ItemZone : MonoBehaviour
     public ItemData.ItemType GetCurrentItemType()
     {
         return itemDataList[currentItemIndex].itemType;
+    }
+
+    void SpawnItemNPC(ItemNPCData npcData)
+    {
+        // 스폰 위치는 NPCManager에서 관리
+        ItemNPCManager.Instance?.SpawnItemNPC(npcData);
     }
 }
