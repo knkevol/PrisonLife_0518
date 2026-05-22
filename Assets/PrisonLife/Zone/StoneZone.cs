@@ -18,9 +18,7 @@ public class StoneZone : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log($"돌 → StoneZone ______OnTriggerEnter");
         ItemNPCController itemNPC = other.GetComponent<ItemNPCController>();
-        Debug.Log($"돌 → StoneZone ______OnTriggerEnter {itemNPC}");
         if (itemNPC != null)
         {
             itemNPC.OnEnterStoneZone();
@@ -29,9 +27,7 @@ public class StoneZone : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        Debug.Log($"돌 → StoneZone OnTriggerExit");
         ItemNPCController itemNPC = other.GetComponent<ItemNPCController>();
-        Debug.Log($"돌 → StoneZone OnTriggerExit {itemNPC}");
         if (itemNPC != null)
         {
             itemNPC.OnExitStoneZone();

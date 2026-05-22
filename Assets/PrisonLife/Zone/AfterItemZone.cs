@@ -25,26 +25,28 @@ public class AfterItemZone : MonoBehaviour
     public void SpawnItems(int count)
     {
         // 기존 아이템 제거
-        ClearItems();
+        //ClearItems();
+        StartCoroutine(SpawnItemsCoroutine(count));
+    }
 
+    IEnumerator SpawnItemsCoroutine(int count)
+    {
+        Collider col = GetComponent<Collider>();
         Vector3 zoneCenter = GetZoneCenter();
 
         for (int i = 0; i < count; i++)
         {
-            GameObject item = Instantiate(handcuffsPrefab, zoneCenter, Quaternion.identity);
+            // 기존 아이템 수 기준으로 위치 계산
+            Vector3 spawnPos = zoneCenter + stackOffset * spawnedHandcuffs.Count;
+
+            GameObject item = Instantiate(handcuffsPrefab, spawnPos, Quaternion.identity);
             item.transform.parent = transform;
-
-            // Zone 중심 기준으로 쌓기
-            Vector3 worldPos = zoneCenter + stackOffset * i;
-            item.transform.position = worldPos;
-            item.transform.localRotation = Quaternion.identity;
             item.transform.localScale = Vector3.one * handcuffsScale;
-
-            // Collider는 유지 (플레이어 감지용)
             spawnedHandcuffs.Add(item);
-        }
 
-        //Debug.Log($"AfterItemZone 아이템 {count}개 스폰 완료");
+            Debug.Log($"아이템 추가 → 총 {spawnedHandcuffs.Count}개");
+            yield return new WaitForSeconds(0.05f);
+        }
     }
 
     Vector3 GetZoneCenter()

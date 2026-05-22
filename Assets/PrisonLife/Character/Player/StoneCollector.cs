@@ -33,8 +33,6 @@ public class StoneCollector : MonoBehaviour
     [Header("AfterItemZone")]
     public AfterItemZone afterItemZone;
 
-    
-
     private Camera mainCamera;
     private bool isShowMax = false;
     private bool isTransferring = false; // 중복 이전 방지

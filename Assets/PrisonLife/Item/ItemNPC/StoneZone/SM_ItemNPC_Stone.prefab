@@ -395,7 +395,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60eaf15c236a45743a2ca23395fe5341, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 10
+  moveSpeed: 4
   stoneZoneCenter: {fileID: 0}
   beforeItemZoneCenter: {fileID: 0}
 --- !u!195 &-4544193922541713331

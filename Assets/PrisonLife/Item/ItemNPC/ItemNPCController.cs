@@ -6,7 +6,7 @@ using UnityEngine.AI;
 public class ItemNPCController : MonoBehaviour
 {
     [Header("이동 설정")]
-    public float moveSpeed = 10f;
+    public float moveSpeed = 4f;
 
     [Header("Zone 연결")]
     public Transform stoneZoneCenter;
@@ -35,16 +35,6 @@ public class ItemNPCController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (agent != null)
-        {
-            Debug.Log($"꼬우State: {currentState} / " +
-                      $"isOnNavMesh: {agent.isOnNavMesh} / " +
-                      $"pathPending: {agent.pathPending} / " +
-                      $"remainingDistance: {agent.remainingDistance} / " +
-                      $"pathStatus: {agent.pathStatus} / " +
-                      $"destination: {agent.destination}");
-        }
-
         switch (currentState)
         {
             case ItemNPCState.MoveToStoneZone:
@@ -58,7 +48,29 @@ public class ItemNPCController : MonoBehaviour
 
             case ItemNPCState.ChasingStone:
                 CheckTargetStoneValid();
+                CheckStoneOverlap();
                 break;
+        }
+    }
+
+    void CheckStoneOverlap()
+    {
+        // NPC 주변 돌 감지
+        Collider[] hits = Physics.OverlapSphere(transform.position, 5f);
+
+        foreach (Collider hit in hits)
+        {
+            if (!hit.CompareTag("Stone")) continue;
+
+            PrisonStone stone = hit.GetComponent<PrisonStone>();
+            if (stone == null || stone.isCollected) continue;
+
+            // 돌 감지 → BeforeItemZone으로 이동
+            StartCoroutine(SendStoneToBeforeItemZone(hit.gameObject));
+            // 다음 돌 탐색
+            targetStone = null;
+            currentState = ItemNPCState.FindingStone;
+            break;
         }
     }
 
@@ -70,20 +82,7 @@ public class ItemNPCController : MonoBehaviour
             Debug.LogError("StoneZoneCenter 없음");
             return;
         }
-
-        if (!agent.isOnNavMesh)
-        {
-            Debug.LogError($"꼬우 NPC NavMesh 밖 → 현재위치: {transform.position}");
-            return;
-        }
-
-        
         agent.SetDestination(stoneZoneCenter.position);
-
-        bool result = agent.SetDestination(stoneZoneCenter.position);
-        Debug.Log($"꼬우 SetDestination 결과: {result} / " +
-              $"목적지: {stoneZoneCenter.position} / " +
-              $"현재위치: {transform.position}");
     }
 
     public void StartFindingStone()
@@ -95,10 +94,6 @@ public class ItemNPCController : MonoBehaviour
 
     void CheckArrivedAtStoneZone()
     {
-        Debug.Log($"꼬우 pathPending: {agent.pathPending} / " +
-              $"remainingDistance: {agent.remainingDistance} / " +
-              $"pathStatus: {agent.pathStatus}");
-
         if (agent.pathPending) return;
         if (agent.remainingDistance > 0.5f) return;
 
@@ -109,7 +104,6 @@ public class ItemNPCController : MonoBehaviour
 
     void FindAndChaseStone()
     {
-        Debug.LogError("돌 FindAndChaseStone");
         // 가장 가까운 돌 탐색
         GameObject nearestStone = FindNearestStone();
 
@@ -122,7 +116,6 @@ public class ItemNPCController : MonoBehaviour
 
         // 돌 발견 → 추적 시작
         targetStone = nearestStone;
-        Debug.LogError($"돌 FindAndChaseStone NPC CurrentState: {currentState}");
         currentState = ItemNPCState.ChasingStone;
         agent.SetDestination(targetStone.transform.position);
         Debug.Log($"돌 발견 → 추적 시작: {targetStone.name}");
@@ -169,17 +162,6 @@ public class ItemNPCController : MonoBehaviour
         return nearest;
     }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        Debug.Log($"돌 OnTriggerEnter");
-        Debug.Log($"돌 OnTriggerEnter {other.name}");
-        if (!other.CompareTag("Stone")) return;
-        if (!isInStoneZone) return;
-
-        // 돌을 BeforeItemZone으로 이동
-        StartCoroutine(SendStoneToBeforeItemZone(other.gameObject));
-    }
-
     IEnumerator SendStoneToBeforeItemZone(GameObject stone)
     {
         Debug.Log($"돌 SendStoneToBeforeItemZone");
@@ -205,8 +187,26 @@ public class ItemNPCController : MonoBehaviour
         Collider col = stone.GetComponent<Collider>();
         if (col != null) col.enabled = false;
 
-        Debug.Log($"돌 → BeforeItemZone으로 이동 완료");
+        BeforeItemZone beforeZone = beforeItemZoneCenter.GetComponent<BeforeItemZone>();
+        if (beforeZone != null)
+        {
+            beforeZone.AddCollectedStone(stone);
+            StopCoroutine(WaitAndProcessStones());
+            StartCoroutine(WaitAndProcessStones());
+        }
         yield return null;
+    }
+
+    IEnumerator WaitAndProcessStones()
+    {
+        yield return new WaitForSeconds(0.3f);
+
+        BeforeItemZone beforeZone = beforeItemZoneCenter.GetComponent<BeforeItemZone>();
+        if (beforeZone != null)
+        {
+            Debug.Log($"ProcessStones 호출 → 돌 {beforeZone.GetStoneCount()}개");
+            beforeZone.ProcessStones();
+        }
     }
 
     public void OnEnterStoneZone()
