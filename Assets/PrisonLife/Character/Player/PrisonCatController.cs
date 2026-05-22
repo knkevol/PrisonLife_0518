@@ -7,11 +7,15 @@ public class PrisonCatController : MonoBehaviour
     // Start is called before the first frame update
     CharacterController cc;
     Animator anim;
-    public float speed = 20f;
 
+    [Header("Movement Settings")]
+    public float speed = 20f;
     float gravity = -20f;
-    float yVelocity = 1f;
+    float yVelocity = -1f;
     public Vector3 childScale = new Vector3(7f, 7f, 7f);
+
+    [Header("Joystick Input")]
+    public DynamicJoystick joystick;
 
     // ─── 터치 관련 변수 추가 ───────────────────────
     private Vector2 touchStartPos;
@@ -19,95 +23,44 @@ public class PrisonCatController : MonoBehaviour
     private bool isTouching = false;
     public float deadZone = 10f; // 이 픽셀 이상 드래그해야 이동
     // ────────────────────────────────────────────────
+    
     void Start()
     {
         cc = GetComponent<CharacterController>();
         anim = GetComponentInChildren<Animator>();
-        
     }
 
     // Update is called once per frame
     void Update()
     {
-        HandleTouchInput();
-        Vector3 move = new Vector3(moveDirection.x, 0, moveDirection.y);
+        float horizontal = joystick.Horizontal;
+        float vertical = joystick.Vertical;
+        Vector3 move = new Vector3(horizontal, 0f, vertical);
 
-        if (cc.isGrounded)
-            yVelocity = -1f;
-        else
-            yVelocity += gravity * Time.deltaTime;
-
-        move.y = yVelocity;
-        cc.Move(move * speed * Time.deltaTime);
-
-        Vector3 flatMove = new Vector3(moveDirection.x, 0, moveDirection.y);
-        if (flatMove.magnitude > 0.1f)
+        if (move.sqrMagnitude > 0.01f)
         {
             anim.SetBool("isRunning", true);
-            transform.rotation = Quaternion.LookRotation(flatMove);
+
+            Quaternion lookRotation = Quaternion.LookRotation(move);
+            transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 10f);
         }
         else
         {
             anim.SetBool("isRunning", false);
+            move = Vector3.zero;
         }
-    }
 
-    void HandleTouchInput()
-    {
-#if UNITY_EDITOR
-        if (Input.GetMouseButtonDown(0))
+        if (cc.isGrounded)
         {
-            touchStartPos = Input.mousePosition;
-            isTouching = true;
+            yVelocity = -1f;
         }
-        else if (Input.GetMouseButton(0)) // 꾹 누른 상태
+        else
         {
-            Vector2 delta = (Vector2)Input.mousePosition - touchStartPos;
-            if (delta.magnitude > deadZone)
-                moveDirection = delta.normalized;
-            else
-                moveDirection = Vector2.zero;
+            yVelocity += gravity * Time.deltaTime;
         }
-        else if (Input.GetMouseButtonUp(0))
-        {
-            isTouching = false;
-            moveDirection = Vector2.zero;
-        }
+        move.y = yVelocity;
 
-// 모바일 → 실제 터치
-#else
-            if (Input.touchCount == 0)
-            {
-                isTouching = false;
-                moveDirection = Vector2.zero;
-                return;
-            }
-
-            Touch touch = Input.GetTouch(0);
-
-            switch (touch.phase)
-            {
-                case TouchPhase.Began:
-                    touchStartPos = touch.position;
-                    isTouching = true;
-                    break;
-
-                case TouchPhase.Moved:
-                case TouchPhase.Stationary:
-                    Vector2 delta = touch.position - touchStartPos;
-                    if (delta.magnitude > deadZone)
-                        moveDirection = delta.normalized;
-                    else
-                        moveDirection = Vector2.zero;
-                    break;
-
-                case TouchPhase.Ended:
-                case TouchPhase.Canceled:
-                    isTouching = false;
-                    moveDirection = Vector2.zero;
-                    break;
-            }
-#endif
+        cc.Move(move * speed * Time.deltaTime);
     }
 
     private void LateUpdate()
