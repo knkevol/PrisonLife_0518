@@ -16,6 +16,7 @@ TagManager:
   - PrisonMoney
   - StoneZone
   - ItemNPC
+  - PrisonEquip
   layers:
   - Default
   - TransparentFX

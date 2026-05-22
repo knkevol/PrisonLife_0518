@@ -13,4 +13,7 @@ public class EquipmentData : ScriptableObject
     public Vector3 positionOffset = Vector3.zero;   // 위치 오프셋
     public Vector3 rotationOffset = Vector3.zero;   // 회전 오프셋
     public Vector3 scaleOffset = Vector3.one;        // 크기 오프셋
+
+    [Header("감지 크기 설정")]
+    public Vector3 overlapSize = new Vector3(1f, 1f, 1f);
 }

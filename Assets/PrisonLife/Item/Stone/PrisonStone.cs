@@ -24,24 +24,4 @@ public class PrisonStone : MonoBehaviour
         spawner = stoneSpawner;
         poolIndex = index;
     }
-
-    private void OnTriggerStay(Collider other)
-    {
-        Debug.Log($"PrisonStone OnTriggerStay: {other}");
-        if (isCollected)
-        {
-            return;
-        }
-
-        //if (other.CompareTag("PrisonPlayer"))
-        //{
-        //    StoneCollector collector = other.GetComponent<StoneCollector>();
-        //    if (collector != null)
-        //    {
-        //        isCollected = true;
-        //        collector.TryCollectStone(gameObject);
-        //        spawner?.OnStoneCollected(poolIndex);
-        //    }
-        //}
-    }
 }

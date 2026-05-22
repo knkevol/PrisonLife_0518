@@ -15,6 +15,7 @@ MonoBehaviour:
   equipmentName: "\uAE30\uBCF8"
   prefab: {fileID: 8440785667469639183, guid: 22d18149b9fd966428bb0523747d38fd, type: 3}
   isDefault: 1
-  positionOffset: {x: 0, y: 0, z: 0.2}
+  positionOffset: {x: -1, y: 0.2, z: 0}
   rotationOffset: {x: 0, y: 0, z: -150}
   scaleOffset: {x: 3, y: 3, z: 3}
+  overlapSize: {x: 1, y: 1, z: 1}

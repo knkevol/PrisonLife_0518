@@ -35,9 +35,10 @@ public class EquipmentManager : MonoBehaviour
     {
         // 기존 장비 제거
         if (currentEquipObj != null)
+        {
             Destroy(currentEquipObj);
+        }
 
-        // 새 장비 생성
         currentEquipObj = Instantiate(data.prefab, equipSlot);
         currentEquipObj.transform.localPosition = data.positionOffset;
         currentEquipObj.transform.localRotation = Quaternion.Euler(data.rotationOffset);
@@ -48,6 +49,15 @@ public class EquipmentManager : MonoBehaviour
         if (currentEquipment != null)
         {
             currentEquipment.SetOriginPosition(data.positionOffset);
+        }
+
+        StoneCollector stoneCollector = GetComponentInParent<StoneCollector>();
+        if (stoneCollector != null)
+        {
+            stoneCollector.SetEquipmentTransform(
+            currentEquipObj.transform,
+            data.overlapSize  // 장비마다 다른 크기 전달
+        );
         }
 
         currentEquipObj.SetActive(isVisible);

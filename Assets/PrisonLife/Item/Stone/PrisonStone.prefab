@@ -97,6 +97,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 14839b1d09cfb8e428d028038d25eb61, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  spawner: {fileID: 0}
+  poolIndex: 0
   isCollected: 0
 --- !u!136 &-8827964217060302072
 CapsuleCollider:
@@ -117,7 +119,7 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.2
+  m_Radius: 0.14
   m_Height: 0.22866231
   m_Direction: 1
   m_Center: {x: 0, y: 0.11453976, z: 0.0066275895}

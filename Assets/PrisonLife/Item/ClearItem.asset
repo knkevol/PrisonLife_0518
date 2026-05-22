@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: ClearItem
   m_EditorClassIdentifier: 
   itemName: ClearItem
-  price: 10
+  price: 50
   itemIcon: {fileID: 21300000, guid: 3163eb477e5ce9d4aa3e08720d3f9db0, type: 3}
   itemType: 2
   equipmentData: {fileID: 0}
+  itemNPCData: {fileID: 0}

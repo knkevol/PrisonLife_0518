@@ -33,6 +33,11 @@ public class StoneCollector : MonoBehaviour
     [Header("AfterItemZone")]
     public AfterItemZone afterItemZone;
 
+    [Header("장비 감지 설정")]
+    public Transform equipmentTransform;  // 장비 Transform 연결
+    public Vector3 equipOverlapSize = new Vector3(1f, 1f, 1f); // 감지 크기
+
+
     private Camera mainCamera;
     private bool isShowMax = false;
     private bool isTransferring = false; // 중복 이전 방지
@@ -56,7 +61,7 @@ public class StoneCollector : MonoBehaviour
     {
         if(isInStoneZone)
         {
-            DetectNearbyStones();
+            DetectStoneWithEquipment();
         }
     }
 
@@ -73,13 +78,21 @@ public class StoneCollector : MonoBehaviour
         }
     }
 
-    void DetectNearbyStones()
+    void DetectStoneWithEquipment()
     {
-        Collider[] hits = Physics.OverlapSphere(transform.position, 1f);
+        if (equipmentTransform == null) return;
+        if (!CanCollect()) return;
         bool stoneNearby = false;
+
+        Collider[] hits = Physics.OverlapBox(
+        equipmentTransform.position,
+        equipOverlapSize / 2f,
+        equipmentTransform.rotation
+        );
 
         foreach (Collider hit in hits)
         {
+            if (!CanCollect()) break;
             if (!hit.CompareTag("Stone"))
             {
                 continue;
@@ -88,11 +101,12 @@ public class StoneCollector : MonoBehaviour
             PrisonStone stone = hit.GetComponent<PrisonStone>();
             if (stone == null || stone.isCollected) continue;
 
+            Debug.Log($"장비로 Stone 감지: {hit.gameObject.name}");
+
             stone.isCollected = true;
             stoneNearby = true;
-            TryCollectStone(hit.gameObject);
+            TryCollectStone(stone.gameObject);
             stone.spawner?.OnStoneCollected(stone.poolIndex);
-
         }
 
         if (stoneNearby)
@@ -103,6 +117,26 @@ public class StoneCollector : MonoBehaviour
         {
             EquipmentManager.Instance?.StopEuqipMoving();
         }
+    }
+
+    public void SetEquipmentTransform(Transform equipTransform, Vector3 overlapSize)
+    {
+        equipmentTransform = equipTransform;
+        equipOverlapSize = overlapSize;
+        Debug.Log($"장비 Transform: {equipTransform?.name} / 크기: {overlapSize}");
+    }
+
+    private void OnDrawGizmos()
+    {
+        if (equipmentTransform == null) return;
+
+        Gizmos.color = Color.blue;
+        Gizmos.matrix = Matrix4x4.TRS(
+            equipmentTransform.position,
+            equipmentTransform.rotation,
+            Vector3.one
+        );
+        Gizmos.DrawWireCube(Vector3.zero, equipOverlapSize);
     }
 
     public bool TryCollectStone(GameObject stone)
@@ -152,7 +186,7 @@ public class StoneCollector : MonoBehaviour
             maxCanvas.SetActive(true);
         }
             
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(1.5f);
 
         if (maxCanvas != null)
         {
@@ -166,14 +200,16 @@ public class StoneCollector : MonoBehaviour
     public int GetStoneCount() => currentStones;
     public int GetFrontItemCount() => collectedHandcuffs.Count;
 
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, 1f);
-    }
+    //private void OnDrawGizmos()
+    //{
+    //    Gizmos.color = Color.red;
+    //    Gizmos.DrawWireSphere(transform.position, 1f);
+    //}
 
     private void OnTriggerEnter(Collider other)
     {
+        if (other.transform.IsChildOf(transform)) return;
+
         Debug.Log($"[트리거] 부딪힌 물체 이름: {other.gameObject.name} | 태그: {other.tag}");
 
         Transform beforeZone = GetZoneTransform(other.transform, "BeforeItemZone");
@@ -223,6 +259,20 @@ public class StoneCollector : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
+        Debug.Log($"OnTriggerExit 발생 → " +
+              $"오브젝트: {other.gameObject.name} / " +
+              $"태그: {other.tag} / " +
+              $"IsChildOf: {other.transform.IsChildOf(transform)}");
+
+        if (other.transform.IsChildOf(transform)) return;
+        //// Stone 태그 무시
+        //// → 수집된 돌이 부모 변경되면서 Exit 발생하는 것
+        if (other.CompareTag("Stone")) return;
+
+        //// Untagged 무시
+        //// → 수집 직후 태그가 Untagged로 변경된 돌
+        //if (other.CompareTag("Untagged")) return;
+
         Transform stoneZone = GetZoneTransform(other.transform, "StoneZone");
         //if (other.CompareTag("StoneZone"))
         if(stoneZone)
