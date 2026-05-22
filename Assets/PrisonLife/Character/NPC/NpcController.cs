@@ -183,6 +183,8 @@ public class NPCController : MonoBehaviour
     {
         currentState = NPCState.NoCell;
         UpdateBubbleText("No Cell");
+        ItemManager.Instance?.ActivateClearZone();
+        //ActivateClearZone();
     }
 
     public void UpdateBubbleText(string text)

@@ -125,7 +125,7 @@ public class ItemZone : MonoBehaviour
                 // NPC 아이템 처리 (추후 구현)
                 break;
             case ItemData.ItemType.Clear:
-                // Clear 로직
+                GameManager.Instance?.ShowClearUI();
                 break;
         }
 
@@ -147,4 +147,9 @@ public class ItemZone : MonoBehaviour
     }
     public bool IsBuy() => isBuy;
     public bool IsAllBuy() => isAllBuy;
+
+    public ItemData.ItemType GetCurrentItemType()
+    {
+        return itemDataList[currentItemIndex].itemType;
+    }
 }
