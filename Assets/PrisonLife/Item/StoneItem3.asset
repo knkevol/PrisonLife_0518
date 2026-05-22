@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: StoneItem3
   m_EditorClassIdentifier: 
   itemName: ItemNPC
-  price: 50
+  price: 10
   itemIcon: {fileID: 21300000, guid: 30d92dbe470ffdc4798f95783615f017, type: 3}
   itemType: 1
   equipmentData: {fileID: 0}

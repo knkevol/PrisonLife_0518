@@ -407,7 +407,7 @@ Transform:
   m_GameObject: {fileID: 76621206}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.5, z: -0.1}
+  m_LocalPosition: {x: 0, y: 0.2, z: -0.1}
   m_LocalScale: {x: 2, y: 1, z: 1.5}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3167,8 +3167,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_AgentTypeID: 0
-  m_CollectObjects: 0
-  m_Size: {x: 10, y: 10, z: 10}
+  m_CollectObjects: 1
+  m_Size: {x: 50, y: 2, z: 80}
   m_Center: {x: 0, y: 2, z: 0}
   m_LayerMask:
     serializedVersion: 2
@@ -3808,9 +3808,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemDataList:
+  - {fileID: 11400000, guid: 2e92c03f0c9a6114ab50ae88ba890c24, type: 2}
   - {fileID: 11400000, guid: 78e5a3ac44fcd934b96fdb8b09b709b6, type: 2}
   - {fileID: 11400000, guid: ec12a74476c8cba4fa90c76c37f411e4, type: 2}
-  - {fileID: 11400000, guid: 2e92c03f0c9a6114ab50ae88ba890c24, type: 2}
   zoneCanvas: {fileID: 929866822}
   priceText: {fileID: 1198154326}
   itemIconImage: {fileID: 648612037}
@@ -5716,7 +5716,7 @@ Transform:
   m_GameObject: {fileID: 1852752256}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 14.7, y: 1, z: -33.5}
+  m_LocalPosition: {x: 14.7, y: 0, z: -33.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:

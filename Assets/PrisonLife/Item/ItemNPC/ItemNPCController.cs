@@ -6,12 +6,12 @@ using UnityEngine.AI;
 public class ItemNPCController : MonoBehaviour
 {
     [Header("이동 설정")]
-    public float moveSpeed = 3f;
+    public float moveSpeed = 10f;
 
     [Header("Zone 연결")]
     public Transform stoneZoneCenter;
     public Transform beforeItemZoneCenter;  // BeforeItemZone 중심
-    public float stoneDetectRadius = 5f;    // 돌 감지 반경
+    public float stoneDetectRadius = 3f;    // 돌 감지 반경
 
     private NavMeshAgent agent;
     private bool isInStoneZone = false;

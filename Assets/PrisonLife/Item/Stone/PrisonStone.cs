@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class PrisonStone : MonoBehaviour
 {
-    private StoneSpawner spawner;
-    private int poolIndex;
+    public StoneSpawner spawner;
+    public int poolIndex;
     public bool isCollected = false;
     // Start is called before the first frame update
     void Start()
@@ -33,15 +33,15 @@ public class PrisonStone : MonoBehaviour
             return;
         }
 
-        if (other.CompareTag("PrisonPlayer"))
-        {
-            StoneCollector collector = other.GetComponent<StoneCollector>();
-            if (collector != null)
-            {
-                isCollected = true;
-                collector.TryCollectStone(gameObject);
-                spawner?.OnStoneCollected(poolIndex);
-            }
-        }
+        //if (other.CompareTag("PrisonPlayer"))
+        //{
+        //    StoneCollector collector = other.GetComponent<StoneCollector>();
+        //    if (collector != null)
+        //    {
+        //        isCollected = true;
+        //        collector.TryCollectStone(gameObject);
+        //        spawner?.OnStoneCollected(poolIndex);
+        //    }
+        //}
     }
 }

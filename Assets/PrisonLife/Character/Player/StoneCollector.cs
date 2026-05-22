@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UIElements;
 using static UnityEditor.Progress;
 
 public class StoneCollector : MonoBehaviour
@@ -55,7 +56,10 @@ public class StoneCollector : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        DetectNearbyStones();
+        if(isInStoneZone)
+        {
+            DetectNearbyStones();
+        }
     }
 
     private void LateUpdate()
@@ -73,29 +77,24 @@ public class StoneCollector : MonoBehaviour
 
     void DetectNearbyStones()
     {
-
-        if (!isInStoneZone)
-        {
-            return;
-        }
-
-        // == 언리얼 SphereTraceByChannel
         Collider[] hits = Physics.OverlapSphere(transform.position, 1f);
         bool stoneNearby = false;
 
         foreach (Collider hit in hits)
         {
-            if (hit.CompareTag("Stone"))
+            if (!hit.CompareTag("Stone"))
             {
-                Debug.Log($"DetectNearbyStones()");
-                PrisonStone stone = hit.GetComponent<PrisonStone>();
-                if (stone != null && !stone.isCollected)
-                {
-                    stone.isCollected = true;
-                    stoneNearby = true;
-                    TryCollectStone(hit.gameObject);
-                }
+                continue;
             }
+
+            PrisonStone stone = hit.GetComponent<PrisonStone>();
+            if (stone == null || stone.isCollected) continue;
+
+            stone.isCollected = true;
+            stoneNearby = true;
+            TryCollectStone(hit.gameObject);
+            stone.spawner?.OnStoneCollected(stone.poolIndex);
+
         }
 
         if (stoneNearby)
@@ -177,7 +176,7 @@ public class StoneCollector : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        //Debug.Log($"[트리거] 부딪힌 물체 이름: {other.gameObject.name} | 태그: {other.tag}");
+        Debug.Log($"[트리거] 부딪힌 물체 이름: {other.gameObject.name} | 태그: {other.tag}");
 
         Transform beforeZone = GetZoneTransform(other.transform, "BeforeItemZone");
         if (beforeZone != null && !isTransferring)
@@ -214,7 +213,9 @@ public class StoneCollector : MonoBehaviour
             StartCoroutine(TransferHandcuffsToZone(counterZone));
         }
 
-        if (other.CompareTag("StoneZone"))
+        Transform stoneZone = GetZoneTransform(other.transform, "StoneZone");
+        //if (other.CompareTag("StoneZone"))
+        if (stoneZone)
         {
             isInStoneZone = true;
             EquipmentManager.Instance?.ShowEquipment();
@@ -224,7 +225,9 @@ public class StoneCollector : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        if(other.CompareTag("StoneZone"))
+        Transform stoneZone = GetZoneTransform(other.transform, "StoneZone");
+        //if (other.CompareTag("StoneZone"))
+        if(stoneZone)
         {
             isInStoneZone = false;
             EquipmentManager.Instance?.HideEquipment();

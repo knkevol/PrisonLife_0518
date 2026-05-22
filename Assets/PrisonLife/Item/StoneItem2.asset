@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: StoneItem2
   m_EditorClassIdentifier: 
   itemName: StoneItem3
-  price: 20
+  price: 30
   itemIcon: {fileID: 21300000, guid: 9953e14626c270f4a9af160f067171cc, type: 3}
   itemType: 0
   equipmentData: {fileID: 11400000, guid: 8b4e4d0966e6f9a43ac7204270a9750e, type: 2}
+  itemNPCData: {fileID: 0}
