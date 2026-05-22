@@ -15,6 +15,7 @@ TagManager:
   - MoneyZone
   - PrisonMoney
   - StoneZone
+  - ItemNPC
   layers:
   - Default
   - TransparentFX

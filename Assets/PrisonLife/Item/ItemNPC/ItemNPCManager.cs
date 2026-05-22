@@ -39,7 +39,6 @@ public class ItemNPCManager : MonoBehaviour
 
     void SpawnStoneZoneNPC(ItemNPCData npcData)
     {
-        Debug.LogError("SpawnStoneZoneNPC");
         if (stoneZoneSpawnPoint == null)
         {
             Debug.LogError("StoneZone 스폰 위치 없음");
@@ -58,6 +57,7 @@ public class ItemNPCManager : MonoBehaviour
         {
             controller.stoneZoneCenter = stoneZoneCenter;
             controller.beforeItemZoneCenter = beforeItemZoneCenter;
+            controller.MoveToStoneZone();
         }
 
         activeStoneNPCs.Add(npc);

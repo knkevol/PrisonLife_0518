@@ -1252,8 +1252,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b6364cb7f07eb14458332830a9687b18, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  stoneZoneSpawnPoint: {fileID: 1047966946}
-  stoneZoneCenter: {fileID: 1189154207}
+  stoneZoneSpawnPoint: {fileID: 1189154207}
+  stoneZoneCenter: {fileID: 519827587}
   beforeItemZoneCenter: {fileID: 349969370}
   sellZoneSpawnPoint: {fileID: 1782327577}
 --- !u!4 &485314209
@@ -1580,7 +1580,7 @@ Transform:
   m_GameObject: {fileID: 511262713}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -1.2, y: 0.5, z: 5.3}
+  m_LocalPosition: {x: -1.5, y: 0.5, z: 4.8}
   m_LocalScale: {x: 13, y: 1, z: 0.2}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1771,7 +1771,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 1.98, z: 1}
-  m_LocalScale: {x: 1.4, y: 2, z: 0.6999998}
+  m_LocalScale: {x: 1.4, y: 2, z: 0.6}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 929866819}
@@ -2134,6 +2134,7 @@ GameObject:
   - component: {fileID: 734250104}
   - component: {fileID: 734250103}
   - component: {fileID: 734250102}
+  - component: {fileID: 734250106}
   m_Layer: 0
   m_Name: Plane
   m_TagString: Untagged
@@ -2228,6 +2229,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &734250106
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 734250101}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a5ac11cc976e418e8d13136b07e1f52, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_AgentTypeID: 0
+  m_CollectObjects: 0
+  m_Size: {x: 10, y: 10, z: 10}
+  m_Center: {x: 0, y: 2, z: 0}
+  m_LayerMask:
+    serializedVersion: 2
+    m_Bits: 1
+  m_UseGeometry: 0
+  m_DefaultArea: 0
+  m_GenerateLinks: 0
+  m_IgnoreNavMeshAgent: 1
+  m_IgnoreNavMeshObstacle: 1
+  m_OverrideTileSize: 0
+  m_TileSize: 256
+  m_OverrideVoxelSize: 0
+  m_VoxelSize: 0.16666667
+  m_MinRegionArea: 2
+  m_NavMeshData: {fileID: 23800000, guid: a0d5c41a98f701c409241cc7cdad4eba, type: 2}
+  m_BuildHeightMesh: 0
 --- !u!1 &769704406
 GameObject:
   m_ObjectHideFlags: 0
@@ -3076,7 +3108,7 @@ Transform:
   m_GameObject: {fileID: 921918901}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.1, z: 0}
+  m_LocalPosition: {x: 0, y: 0.2, z: 0}
   m_LocalScale: {x: 5, y: 1, z: 7}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3092,7 +3124,7 @@ MeshCollider:
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 1
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -3168,13 +3200,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_AgentTypeID: 0
   m_CollectObjects: 1
-  m_Size: {x: 50, y: 2, z: 80}
-  m_Center: {x: 0, y: 2, z: 0}
+  m_Size: {x: 45, y: 2, z: 100}
+  m_Center: {x: 0, y: 2, z: -5}
   m_LayerMask:
     serializedVersion: 2
     m_Bits: 4294967295
   m_UseGeometry: 0
-  m_DefaultArea: 0
+  m_DefaultArea: 3
   m_GenerateLinks: 0
   m_IgnoreNavMeshAgent: 1
   m_IgnoreNavMeshObstacle: 1
@@ -3767,8 +3799,8 @@ Transform:
   m_GameObject: {fileID: 1047966945}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 26.6, y: 1, z: 15.5}
-  m_LocalScale: {x: 2, y: 1, z: 2}
+  m_LocalPosition: {x: 26.6, y: 1, z: 12.8}
+  m_LocalScale: {x: 1.5, y: 1, z: 2}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 929866819}
@@ -3881,7 +3913,7 @@ Transform:
   m_GameObject: {fileID: 1189154206}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 15.8, y: 0, z: 58.1}
+  m_LocalPosition: {x: 39.7, y: 0, z: 25}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
