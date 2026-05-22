@@ -1,7 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using TMPro;
+using Unity.VisualScripting;
+using UnityEngine;
 
 public class NPCController : MonoBehaviour
 {
@@ -30,8 +31,8 @@ public class NPCController : MonoBehaviour
     {
         Waiting,    // SellZone 대기
         Moving,     // PrisonZone 이동중
+        Arrived,
         NoCell,      // PrisonZone 가득 참
-        Next        // 대기열 이동
     }
 
     public NPCState currentState = NPCState.Waiting;
@@ -44,7 +45,9 @@ public class NPCController : MonoBehaviour
     }
     private void Update()
     {
-        if (!isMoving)
+        Debug.Log($"isMoving?: {isMoving}");
+        Debug.Log($"currentState?: {currentState}");
+        if (!isMoving && currentState == NPCState.Waiting)
         {
             transform.position = Vector3.MoveTowards(
             transform.position,
@@ -58,9 +61,19 @@ public class NPCController : MonoBehaviour
 
     void MoveAlongWaypoints()
     {
-        if (currentWaypointIndex >= waypoints.Count) return;
+        Debug.Log($"currentWaypointIndex: {currentWaypointIndex}");
+        Debug.Log($"waypoints.Count: {waypoints.Count}");
+        if (currentWaypointIndex >= waypoints.Count)
+        {
+            isMoving = false;
+            return;
+        }
 
         Transform target = waypoints[currentWaypointIndex];
+        if(target == null)
+        {
+            return;
+        }
 
         // 현재 경유지로 이동
         transform.position = Vector3.MoveTowards(
@@ -82,6 +95,8 @@ public class NPCController : MonoBehaviour
             // 마지막 경유지 도착
             if (currentWaypointIndex >= waypoints.Count)
             {
+                isMoving = false;
+                currentState = NPCState.Arrived;
                 OnArrivedAtPrisonZone();
                 Debug.Log("최종 목적지 도착");
             }
@@ -106,14 +121,15 @@ public class NPCController : MonoBehaviour
             bubbleCanvas.transform.rotation = mainCamera.transform.rotation;
 
         // PrisonZone으로 이동 중일 때
-        if (currentState == NPCState.Moving && prisonZoneTarget != null)
-        {
-            MovePrisonZone();
-        }
+        //if (currentState == NPCState.Moving && prisonZoneTarget != null)
+        //{
+        //    MovePrisonZone();
+        //}
     }
 
     void MovePrisonZone()
     {
+        Debug.Log("MovePrisonZone");
         Vector3 targetPos = prisonZoneTarget.position;
         SetTargetPosition(targetPos);
 
@@ -127,9 +143,10 @@ public class NPCController : MonoBehaviour
 
     void OnArrivedAtPrisonZone()
     {
-        Debug.Log("NPC PrisonZone 도착");
+        Debug.Log("OnArrivedAtPrisonZone");
         isMoving = false;
-        currentState = NPCState.Waiting;
+        waypoints = null;
+        currentState = NPCState.Arrived;
 
         if (PrisonZone.Instance != null)
         {
@@ -143,13 +160,8 @@ public class NPCController : MonoBehaviour
             }
         }
 
-        // Spawner에 이탈 알림 → 새 NPC 스폰 트리거
-        if (spawner != null)
-            spawner.OnNPCLeave(gameObject);
-
-        // NPC를 PrisonZone 자식으로 편입
-        if (prisonZoneTarget != null)
-            transform.parent = prisonZoneTarget.parent;
+        spawner = null;
+        transform.parent = PrisonZone.Instance?.transform; //PrisonZOne 자식으로
 
         // 말풍선 숨기기
         if (bubbleCanvas != null)
@@ -159,6 +171,7 @@ public class NPCController : MonoBehaviour
     //NPC 상태변경
     public void StartMoveToPrison(List<Transform> targetWaypoints)
     {
+        Debug.Log("StartMoveToPrison");
         waypoints = targetWaypoints;
         currentWaypointIndex = 0;
         isMoving = true;

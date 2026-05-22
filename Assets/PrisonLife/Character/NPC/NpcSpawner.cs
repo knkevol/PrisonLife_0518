@@ -160,13 +160,6 @@ public class NPCSpawner : MonoBehaviour
     // 구매완료 한 NPC 이동
     public void OnNPCLeave(GameObject npc)
     {
-        NPCController rightNPC = GetRightmostNPC();
-        if (activeNPCs.Contains(npc))
-        {
-            activeNPCs.Remove(npc);
-            Debug.Log($"NPC PrisonZone 이동 → 현재 NPC 수: {activeNPCs.Count}");
-        }
-
         float startX = npcSpawnerCenter.x - npcSpawnerSize.x / 2f + npcSpacing / 2f;
 
         for (int i = 0; i < activeNPCs.Count; i++)
@@ -174,7 +167,8 @@ public class NPCSpawner : MonoBehaviour
             if (activeNPCs[i] != null)
             {
                 NPCController controller = activeNPCs[i].GetComponent<NPCController>();
-                
+                NPCController rightNPC = GetRightmostNPC();
+
                 if (controller != null && npcPath != null)
                 {
                     float nextX = startX + ((i + 1) * npcSpacing);
@@ -186,6 +180,19 @@ public class NPCSpawner : MonoBehaviour
             }
         }
 
+        if (activeNPCs.Contains(npc))
+        {
+            activeNPCs.Remove(npc);
+            Debug.Log($"NPC PrisonZone 이동 → 현재 NPC 수: {activeNPCs.Count}");
+        }
+
+        StartCoroutine(FillNPCDelayed());
+        //FillNPC();
+    }
+
+    IEnumerator FillNPCDelayed()
+    {
+        yield return new WaitForSeconds(1f);
         FillNPC();
     }
     public void ShowNoCellToAll()

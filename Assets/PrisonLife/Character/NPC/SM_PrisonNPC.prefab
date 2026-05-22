@@ -1073,6 +1073,7 @@ MonoBehaviour:
   bubbleText: {fileID: 2676284894796268936}
   moveSpeed: 10
   prisonZoneTarget: {fileID: 0}
+  waypoints: []
   currentState: 0
 --- !u!1 &6932442663309234596
 GameObject:
