@@ -3854,9 +3854,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemDataList:
-  - {fileID: 11400000, guid: 2e92c03f0c9a6114ab50ae88ba890c24, type: 2}
   - {fileID: 11400000, guid: 78e5a3ac44fcd934b96fdb8b09b709b6, type: 2}
   - {fileID: 11400000, guid: ec12a74476c8cba4fa90c76c37f411e4, type: 2}
+  - {fileID: 11400000, guid: 2e92c03f0c9a6114ab50ae88ba890c24, type: 2}
   zoneCanvas: {fileID: 929866822}
   priceText: {fileID: 1198154326}
   itemIconImage: {fileID: 648612037}
