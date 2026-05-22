@@ -15,7 +15,6 @@ public class MoneyZone : MonoBehaviour
     public Vector3 moneyBackOffset = new Vector3(0f, 0.5f, -6f);   // 등 뒤 첫번째 위치
 
     private List<GameObject> moneyPrefabList = new List<GameObject>();
-    private bool isTransferring = false;
 
     // Start is called before the first frame update
     void Start()
@@ -28,9 +27,7 @@ public class MoneyZone : MonoBehaviour
     }
     private void OnTriggerEnter(Collider other)
     {
-        //Debug.Log($"SellCounter 와 부딪힌 오브젝트 {other.gameObject.name}");
-
-        if (other.CompareTag("PrisonPlayer") && !isTransferring)
+        if (other.CompareTag("PrisonPlayer"))
         {
             if (moneyPrefabList.Count == 0)
             {
@@ -61,9 +58,6 @@ public class MoneyZone : MonoBehaviour
             money.transform.localScale = Vector3.one * moneyScale;
             moneyPrefabList.Add(money);
 
-            // MoneyManager UI 업데이트
-            //MoneyManager.Instance?.AddMoney(10);
-
             Debug.Log($"돈 추가 → 총 {moneyPrefabList.Count}장");
 
             yield return new WaitForSeconds(0.05f);
@@ -72,17 +66,18 @@ public class MoneyZone : MonoBehaviour
 
     IEnumerator TransferMoneyToPlayer(Transform playerTransform)
     {
-        isTransferring = true;
         Debug.Log($"돈 {moneyPrefabList.Count}장 플레이어 등 뒤로 이전 시작");
 
-        // 현재 플레이어 등 뒤에 이미 쌓인 돈 갯수 확인
-        // 등 뒤 기존 돈과 겹치지 않도록 인덱스 계산
         int existingCount = GetExistingBackMoneyCount(playerTransform);
 
         for (int i = 0; i < moneyPrefabList.Count; i++)
         {
             GameObject money = moneyPrefabList[i];
-            if (money == null) continue;
+            if (money == null)
+            {
+                Debug.Log($"money == null");
+                continue;
+            }
 
             // 플레이어 자식으로 편입
             money.transform.parent = playerTransform;
@@ -101,7 +96,6 @@ public class MoneyZone : MonoBehaviour
         }
 
         moneyPrefabList.Clear();
-        isTransferring = false;
 
         Debug.Log("돈 이전 완료");
     }

@@ -153,6 +153,11 @@ public class ItemZone : MonoBehaviour
 
     public ItemData.ItemType GetCurrentItemType()
     {
+        if (itemDataList == null || currentItemIndex >= itemDataList.Count)
+        {
+            return ItemData.ItemType.Equipment;
+        }
+
         return itemDataList[currentItemIndex].itemType;
     }
 

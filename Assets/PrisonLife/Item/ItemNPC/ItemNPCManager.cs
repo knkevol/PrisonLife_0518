@@ -75,7 +75,7 @@ public class ItemNPCManager : MonoBehaviour
         GameObject npc = Instantiate(
             npcData.prefab,
             sellZoneSpawnPoint.position,
-            Quaternion.identity
+            Quaternion.Euler(0f, 180f, 0f)
         );
 
         activeSellNPCs.Add(npc);

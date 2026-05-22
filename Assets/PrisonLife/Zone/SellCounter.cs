@@ -34,6 +34,7 @@ public class SellCounter : MonoBehaviour
     public void AddHandcuffs(List<GameObject> handcuffs)
     {
         handcuffsList.AddRange(handcuffs);
+        
         Debug.Log($"SellCounter 수갑 추가 → 총 {handcuffsList.Count}개");
     }
 
@@ -103,11 +104,16 @@ public class SellCounter : MonoBehaviour
 
             if (available >= desired)
             {
+                Debug.Log($"구매성공: {desired}개");
                 // 구매 성공
                 RemoveHandcuffs(desired);
 
                 if (moneyZone != null)
+                {
+                    Debug.Log($"moneyZone != null");
                     moneyZone.AddMoneyPrefab(desired);
+                }
+
 
                 npcSpawner.OnNPCLeave(rightNPC.gameObject);
 

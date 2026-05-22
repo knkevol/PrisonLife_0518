@@ -5,14 +5,11 @@ using UnityEngine;
 public class SellItemNPCController : MonoBehaviour
 {
     [Header("이동 설정")]
-    public float moveSpeed = 3f;
+    public float moveSpeed = 10f;
     public int maxCarryCount = 10;
     public float arriveDistance = 0.5f; // 도착 판정 거리
 
     [Header("Zone 연결")]
-    public GameObject afterItemZoneObj;    // GameObject 타입으로 변경
-    public GameObject sellCounterObj;      // GameObject 타입으로 변경
-
     public AfterItemZone afterItemZone;     // AfterItemZone 컴포넌트
     public SellCounter sellCounter;          // SellCounter 컴포넌트
 
@@ -20,12 +17,13 @@ public class SellItemNPCController : MonoBehaviour
     private Transform sellCounterCenter;
 
     [Header("아이템 설정")]
-    public Vector3 stackOffset = new Vector3(0f, 1f, 0f);
-    public float itemScale = 5f;
+    public Vector3 stackOffset = new Vector3(0f, 0.2f, 0f);
+    public Vector3 counterStackOffset = new Vector3(0f, 1f, 0f);
 
     private List<GameObject> carriedItems = new List<GameObject>();
     private Vector3 targetPosition;
     private bool isMoving = false;
+    private Vector3 spawnPosition;
 
     public enum SellNPCState
     {
@@ -41,6 +39,11 @@ public class SellItemNPCController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        spawnPosition = transform.position;
+
+        afterItemZone = FindObjectOfType<AfterItemZone>();
+        sellCounter = FindObjectOfType<SellCounter>();
+
         afterItemZoneCenter = afterItemZone.transform;
         sellCounterCenter = sellCounter.transform;
 
@@ -133,10 +136,9 @@ public class SellItemNPCController : MonoBehaviour
             if (item == null) continue;
 
             item.transform.parent = transform;
-            item.transform.localPosition = stackOffset * carriedItems.Count;
+            item.transform.localPosition = stackOffset * i;
             item.transform.localRotation = Quaternion.identity;
-            item.transform.localScale = Vector3.one * itemScale;
-
+            item.transform.localScale = Vector3.one;
             Collider col = item.GetComponent<Collider>();
             if (col != null) col.enabled = false;
 
@@ -151,20 +153,60 @@ public class SellItemNPCController : MonoBehaviour
 
     IEnumerator DropItems()
     {
+        Debug.Log("DropItems");
         currentState = SellNPCState.DropItems;
 
         if (sellCounter != null)
-            sellCounter.AddHandcuffs(carriedItems);
-
-        foreach (GameObject item in carriedItems)
         {
+            sellCounter.AddHandcuffs(carriedItems);
+        }
+
+        for (int i = 0; i < carriedItems.Count; i++)
+        {
+            GameObject item = carriedItems[i];
             if (item == null) continue;
+
+            // NPC 자식에서 SellCounter 자식으로 이전
             item.transform.parent = sellCounterCenter;
+
+            // SellCounter 내 위치 설정
+            item.transform.localPosition = counterStackOffset * i;
+            item.transform.localRotation = Quaternion.identity;
+            item.transform.localScale = Vector3.one;
+
+            yield return new WaitForSeconds(0.05f);
         }
 
         carriedItems.Clear();
+        Debug.Log("아이템 내려놓기 완료");
 
         yield return new WaitForSeconds(0.3f);
-        Debug.Log("아이템 내려놓기 완료");
+
+        sellCounter.TryBuy();
+
+        // 4. 스폰 위치로 복귀
+        yield return StartCoroutine(MoveToSpawnPoint());
+    }
+
+    IEnumerator MoveToSpawnPoint()
+    {
+        Debug.Log("스폰 위치로 복귀");
+
+        while (Vector3.Distance(transform.position, spawnPosition) > arriveDistance)
+        {
+            transform.position = Vector3.MoveTowards(
+                transform.position,
+                spawnPosition,
+                moveSpeed * Time.deltaTime
+            );
+
+            Vector3 dir = (spawnPosition - transform.position).normalized;
+            if (dir != Vector3.zero)
+                transform.rotation = Quaternion.LookRotation(dir);
+
+            yield return null;
+        }
+
+        Debug.Log("스폰 위치 복귀 완료");
     }
 }

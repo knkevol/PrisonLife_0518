@@ -396,13 +396,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 922730cf38465e94aae08819a703fce7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 3
+  moveSpeed: 10
   maxCarryCount: 10
   arriveDistance: 0.5
   afterItemZone: {fileID: 0}
   sellCounter: {fileID: 0}
-  stackOffset: {x: 0, y: 1, z: 0}
-  itemScale: 5
+  stackOffset: {x: 0, y: 0.2, z: 0}
+  counterStackOffset: {x: 0, y: 1, z: 0}
 --- !u!4 &3269132272266644774 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 34861422615282642, guid: 68f005a362cc6114a865777e4c8956db,
