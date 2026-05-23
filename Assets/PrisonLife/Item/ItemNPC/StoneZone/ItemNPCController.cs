@@ -76,21 +76,15 @@ public class ItemNPCController : MonoBehaviour
 
     public void MoveToStoneZone()
     {
-        Debug.Log("꼬 StartMoveToStoneZone 시작");
-
         if (agent == null)
         {
-            Debug.LogError("꼬 agent null → NavMeshAgent 컴포넌트 없음");
             return;
         }
-        Debug.Log("꼬 agent 확인");
 
         if (!agent.isOnNavMesh)
         {
-            Debug.LogError($"꼬 NavMesh 위에 없음 → 스폰위치: {transform.position}");
             return;
         }
-        Debug.Log("꼬 isOnNavMesh 확인");
 
         if (stoneZoneCenter == null)
         {
@@ -99,7 +93,7 @@ public class ItemNPCController : MonoBehaviour
         }
 
         bool result = agent.SetDestination(stoneZoneCenter.position);
-        Debug.Log($"꼬 SetDestination 결과: {result} / 목적지: {stoneZoneCenter.position}");
+        Debug.Log($"SetDestination 결과: {result} / 목적지: {stoneZoneCenter.position}");
     }
 
     public void StartFindingStone()

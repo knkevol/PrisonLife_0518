@@ -23,7 +23,7 @@ public class StoneCollector : MonoBehaviour
     [Header("MAX Text")]
     public GameObject maxCanvas;
     public TextMeshProUGUI maxText;
-    public Vector3 maxTextOffset = new Vector3(0f, 2f, 0f);
+    public Vector3 maxTextOffset = new Vector3(0f, 10f, -15f);
 
     [Header("BeforeItemZone")]
     public Vector3 zoneStackOffset = new Vector3(0f, 2f, 0f);
@@ -81,7 +81,6 @@ public class StoneCollector : MonoBehaviour
     {
         if (equipmentTransform == null) return;
         if (!CanCollect()) return;
-        bool stoneNearby = false;
 
         Collider[] hits = Physics.OverlapBox(
         equipmentTransform.position,
@@ -91,6 +90,9 @@ public class StoneCollector : MonoBehaviour
 
         foreach (Collider hit in hits)
         {
+            Debug.Log($"꼬 감지: {hit.gameObject.name} / " +
+                  $"IsChildOf: {hit.transform.IsChildOf(transform)} / " +
+                  $"isCollected: {hit.GetComponent<PrisonStone>()?.isCollected}");
             if (!CanCollect()) break;
             if (!hit.CompareTag("Stone"))
             {
@@ -103,18 +105,8 @@ public class StoneCollector : MonoBehaviour
             Debug.Log($"장비로 Stone 감지: {hit.gameObject.name}");
 
             stone.isCollected = true;
-            stoneNearby = true;
             TryCollectStone(stone.gameObject);
             stone.spawner?.OnStoneCollected(stone.poolIndex);
-        }
-
-        if (stoneNearby)
-        {
-            EquipmentManager.Instance?.StartEuqipMoving();
-        }
-        else
-        {
-            EquipmentManager.Instance?.StopEuqipMoving();
         }
     }
 
@@ -142,7 +134,7 @@ public class StoneCollector : MonoBehaviour
     {
         if (currentStones >= maxStones)
         {
-            return false; // 수정예정 :: 수집 but max 띄우기
+            return false;
         }
 
         // 돌을 캐릭터 등 뒤로 이동
@@ -168,7 +160,9 @@ public class StoneCollector : MonoBehaviour
         if (currentStones >= maxStones)
         {
             if (maxText != null)
+            {
                 StartCoroutine(ShowMaxText());
+            }
         }
 
         Debug.Log($"돌 수집: {currentStones}/{maxStones}");

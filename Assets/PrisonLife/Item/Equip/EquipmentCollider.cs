@@ -11,9 +11,7 @@ public class EquipmentCollider : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Debug.LogError("±ô Start");
         stoneCollector = GetComponentInParent<StoneCollector>();
-        Debug.Log($"±ô StoneCollector {stoneCollector}");
         if (stoneCollector == null)
         {
             Debug.LogError("StoneCollector ¾øÀ½");
@@ -22,7 +20,6 @@ public class EquipmentCollider : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.LogError("±ô OnTriggerEnter");
         if (!other.CompareTag("Stone")) return;
 
         PrisonStone stone = other.GetComponent<PrisonStone>();
@@ -34,7 +31,6 @@ public class EquipmentCollider : MonoBehaviour
 
     private void OnTriggerStay(Collider other)
     {
-        Debug.LogError("±ô OnTriggerStay");
         if (!other.CompareTag("Stone")) return;
 
         PrisonStone stone = other.GetComponent<PrisonStone>();
@@ -45,7 +41,6 @@ public class EquipmentCollider : MonoBehaviour
 
     void CollectStone(PrisonStone stone)
     {
-        Debug.LogError("±ô CollectStone");
         if (stoneCollector == null) return;
         if (!stoneCollector.CanCollect()) return;
 

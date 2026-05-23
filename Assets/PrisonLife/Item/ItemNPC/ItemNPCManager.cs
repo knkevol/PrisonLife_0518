@@ -63,7 +63,6 @@ public class ItemNPCManager : MonoBehaviour
             controller.MoveToStoneZone();
         }
 
-        Debug.LogError("±ô controller != null");
         activeStoneNPCs.Add(npc);
         Debug.Log($"StoneZone NPC ½ºÆù: {npcData.npcName}");
     }

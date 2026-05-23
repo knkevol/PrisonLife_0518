@@ -3102,7 +3102,7 @@ MonoBehaviour:
   handcuffsScale: 6
   maxCanvas: {fileID: 811172368}
   maxText: {fileID: 1859416768}
-  maxTextOffset: {x: 0, y: 2, z: 0}
+  maxTextOffset: {x: 0, y: 10, z: -15}
   zoneStackOffset: {x: 0, y: 2, z: 0}
   zoneStoneScale: 8
   afterItemZone: {fileID: 701914450}
@@ -7056,13 +7056,13 @@ Transform:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
+  - {fileID: 811172372}
   - {fileID: 699985669}
   - {fileID: 485314209}
   - {fileID: 1298438245}
   - {fileID: 1418811992}
   - {fileID: 824027662}
   - {fileID: 734250105}
-  - {fileID: 811172372}
   - {fileID: 865524268}
   - {fileID: 1084575247}
   - {fileID: 968389609}

@@ -10,11 +10,12 @@ public class PrisonZone : MonoBehaviour
     [Header("인원 설정")]
     public int maxCapacity = 10;
     private int currentCount = 0;
+    private int reservedCount = 0;  // 이동 중인 예약 인원
 
     [Header("UI 설정")]
     public Canvas prisonCanvas;              // World Space Canvas
     public GameObject capacityBubble;
-    public TextMeshProUGUI capacityText;     // 0/10 텍스트
+    public TextMeshProUGUI capacityText;
     public Vector3 uiOffset = new Vector3(0f, 3f, 0f); // UI 높이
 
     private Camera mainCamera;
@@ -51,9 +52,31 @@ public class PrisonZone : MonoBehaviour
         }
     }
 
+    // NPC 이동 시작 시 호출 (SellCounter에서)
+    public bool TryReserve()
+    {
+        if (currentCount + reservedCount >= maxCapacity)
+        {
+            Debug.Log("PrisonZone 가득 참 (예약 포함)");
+            return false;
+        }
+
+        reservedCount++;
+        Debug.Log($"PrisonZone 예약 → " +
+                  $"현재: {currentCount} / " +
+                  $"예약: {reservedCount} / " +
+                  $"최대: {maxCapacity}");
+        return true;
+    }
+
     // ─── NPC 입장 ────────────────────────────────────
     public bool TryEnterPrison(GameObject npc)
     {
+        if (reservedCount > 0)
+        {
+            reservedCount--;
+        }
+
         prisonNPCs.Add(npc);
         currentCount++;
         UpdateUI();
@@ -78,6 +101,17 @@ public class PrisonZone : MonoBehaviour
     {
         if (capacityText != null)
             capacityText.text = $"{currentCount}/{maxCapacity}";
+    }
+
+    // 예약 취소 (NoCell 등 이동 실패 시)
+    public void CancelReserve()
+    {
+        if (reservedCount > 0)
+        {
+            reservedCount--;
+        }
+
+        Debug.Log($"예약 취소 → 예약: {reservedCount}");
     }
 
     public bool IsFull() => currentCount >= maxCapacity;

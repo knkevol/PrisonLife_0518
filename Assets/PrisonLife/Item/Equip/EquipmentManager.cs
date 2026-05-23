@@ -80,21 +80,9 @@ public class EquipmentManager : MonoBehaviour
         if (currentEquipObj != null)
             currentEquipObj.SetActive(false);
 
-        StopEuqipMoving();
         Debug.Log("Àåºñ ¼û±è");
     }
 
-    public void StartEuqipMoving()
-    {
-        if (currentEquipment != null)
-            currentEquipment.StartEuqipMoving();
-    }
-
-    public void StopEuqipMoving()
-    {
-        if (currentEquipment != null)
-            currentEquipment.StopEuqipMoving();
-    }
 
     // Update is called once per frame
     void Update()

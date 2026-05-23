@@ -97,6 +97,15 @@ public class SellCounter : MonoBehaviour
                 yield break;
             }
 
+            if (PrisonZone.Instance == null) yield break;
+
+            if (!PrisonZone.Instance.TryReserve())
+            {
+                Debug.Log("PrisonZone 가득 참 → 구매 불가");
+                npcSpawner.ShowNoCellToAll();
+                yield break;
+            }
+
             int desired = rightNPC.desiredAmount;
             int available = handcuffsList.Count;
 
@@ -123,6 +132,7 @@ public class SellCounter : MonoBehaviour
             }
             else
             {
+                PrisonZone.Instance.CancelReserve();
                 Debug.Log($"수갑 부족 → 필요: {desired} / 보유: {available}");
                 yield break;
             }
