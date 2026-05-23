@@ -15,6 +15,7 @@ public class MoneyZone : MonoBehaviour
     public Vector3 moneyBackOffset = new Vector3(0f, 0.5f, -6f);   // 등 뒤 첫번째 위치
 
     private List<GameObject> moneyPrefabList = new List<GameObject>();
+    private List<GameObject> playerMoneyList = new List<GameObject>();
 
     // Start is called before the first frame update
     void Start()
@@ -66,8 +67,6 @@ public class MoneyZone : MonoBehaviour
 
     IEnumerator TransferMoneyToPlayer(Transform playerTransform)
     {
-        Debug.Log($"돈 {moneyPrefabList.Count}장 플레이어 등 뒤로 이전 시작");
-
         int existingCount = GetExistingBackMoneyCount(playerTransform);
 
         for (int i = 0; i < moneyPrefabList.Count; i++)
@@ -91,13 +90,35 @@ public class MoneyZone : MonoBehaviour
             Collider col = money.GetComponent<Collider>();
             if (col != null) col.enabled = false;
 
+            playerMoneyList.Add(money);
             Debug.Log($"[{i}] 돈 이전 완료 → localPos: {localPos}");
             yield return new WaitForSeconds(0.05f);
         }
-
         moneyPrefabList.Clear();
-
         Debug.Log("돈 이전 완료");
+    }
+
+    public void RemoveMoneyPrefabs(int amount)
+    {
+        int removeCount = amount / 10;
+
+        for (int i = 0; i < removeCount; i++)
+        {
+            if (playerMoneyList.Count == 0)
+            {
+                break;
+            }
+
+            // 마지막 머니부터 제거
+            int lastIndex = playerMoneyList.Count - 1;
+            GameObject money = playerMoneyList[lastIndex];
+            playerMoneyList.RemoveAt(lastIndex);
+
+            if (money != null)
+            {
+                Destroy(money);
+            }
+        }
     }
 
     int GetExistingBackMoneyCount(Transform playerTransform)
@@ -106,7 +127,9 @@ public class MoneyZone : MonoBehaviour
         foreach (Transform child in playerTransform)
         {
             if (child.CompareTag("PrisonMoney"))
+            {
                 count++;
+            }
         }
         return count;
     }

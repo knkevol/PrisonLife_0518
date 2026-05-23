@@ -122,20 +122,24 @@ public class ItemZone : MonoBehaviour
                 break;
 
             case ItemData.ItemType.NPC:
+                Debug.Log("NPC 케이스 진입");
                 if (item.itemNPCData != null)
                 {
                     SpawnItemNPC(item.itemNPCData);
+                }
+                else
+                {
+                    Debug.LogError("itemNPCData null");
                 }
                 break;
             case ItemData.ItemType.Clear:
                 GameManager.Instance?.ShowClearUI();
                 break;
         }
-
-        Debug.Log($"아이템인덱스: {currentItemIndex} / 아이템리스트 갯수: {itemDataList.Count}");
+        Debug.Log("switch문 완료");
         currentItemIndex++;
         Debug.Log($"아이템인덱스++: {currentItemIndex} / 아이템리스트 갯수: {itemDataList.Count}");
-
+        
         if (currentItemIndex >= itemDataList.Count)
         {
             Debug.Log($"currentItemIndex >= itemDataList.Count");

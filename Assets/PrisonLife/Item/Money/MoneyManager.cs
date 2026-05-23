@@ -44,6 +44,12 @@ public class MoneyManager : MonoBehaviour
         currentMoney -= amount;
         UpdateMoneyUI();
 
+        MoneyZone moneyZone = FindObjectOfType<MoneyZone>();
+        if (moneyZone != null)
+        { 
+            moneyZone.RemoveMoneyPrefabs(amount); 
+        }
+
 
         return true;
     }

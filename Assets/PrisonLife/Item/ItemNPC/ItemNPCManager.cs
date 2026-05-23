@@ -39,6 +39,7 @@ public class ItemNPCManager : MonoBehaviour
 
     void SpawnStoneZoneNPC(ItemNPCData npcData)
     {
+        Debug.LogError("SpawnStoneZoneNPC");
         if (stoneZoneSpawnPoint == null)
         {
             Debug.LogError("StoneZone 스폰 위치 없음");
@@ -53,13 +54,16 @@ public class ItemNPCManager : MonoBehaviour
 
         // ItemNPCController에 Zone 정보 전달
         ItemNPCController controller = npc.GetComponent<ItemNPCController>();
+        //Debug.Log($"StoneZone NPC 스폰: {controller}");
         if (controller != null)
         {
+            Debug.LogError("controller != null");
             controller.stoneZoneCenter = stoneZoneCenter;
             controller.beforeItemZoneCenter = beforeItemZoneCenter;
             controller.MoveToStoneZone();
         }
 
+        Debug.LogError("깜 controller != null");
         activeStoneNPCs.Add(npc);
         Debug.Log($"StoneZone NPC 스폰: {npcData.npcName}");
     }
