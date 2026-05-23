@@ -8,7 +8,7 @@ public class PrisonZone : MonoBehaviour
     public static PrisonZone Instance;
 
     [Header("인원 설정")]
-    public int maxCapacity = 10;
+    public int maxCapacity = 20;
     private int currentCount = 0;
     private int reservedCount = 0;  // 이동 중인 예약 인원
 

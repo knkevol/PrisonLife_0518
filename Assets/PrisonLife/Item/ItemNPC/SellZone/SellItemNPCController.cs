@@ -90,6 +90,9 @@ public class SellItemNPCController : MonoBehaviour
     {
         while (true)
         {
+            Debug.Log("NPCRoutine");
+            Debug.Log($"afterItemZone: {afterItemZone}");
+            Debug.Log($"afterItemZone.GetItemCount(): {afterItemZone.GetItemCount()}");
             // AfterItemZone 아이템 없으면 대기
             if (afterItemZone == null || afterItemZone.GetItemCount() == 0)
             {
@@ -172,7 +175,7 @@ public class SellItemNPCController : MonoBehaviour
             // SellCounter 내 위치 설정
             item.transform.localPosition = counterStackOffset * i;
             item.transform.localRotation = Quaternion.identity;
-            item.transform.localScale = Vector3.one;
+            item.transform.localScale = Vector3.one * 6f;
 
             yield return new WaitForSeconds(0.05f);
         }
