@@ -80,7 +80,7 @@ flowchart LR
 <br />
 
 <p align="center">
-<img width="80%" src="https://github.com/user-attachments/assets/df363843-96a4-4c60-9efc-285318493873"/>
+<img width="30%" src="https://github.com/user-attachments/assets/df363843-96a4-4c60-9efc-285318493873"/>
 </p>
 
 <br />
